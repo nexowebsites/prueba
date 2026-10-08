@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión Comercial Completo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f7f6; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto 50px auto; padding: 0 20px; box-sizing: border-box; }
+
+        /* --- CARRUSEL 16:9 --- */
+        .carousel-container {
+            position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 400px; background: #000; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 30px;
+        }
+        .carousel-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; display: flex; align-items: center; justify-content: center; }
+        .carousel-slide.active { opacity: 1; }
+        .carousel-slide img, .carousel-slide video { width: 100%; height: 100%; object-fit: cover; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(22, 66, 60, 0.7); color: white; border: none; padding: 12px 16px; cursor: pointer; font-size: 16px; border-radius: 50%; z-index: 10; }
+        .carousel-btn:hover { background: rgba(22, 66, 60, 1); }
+        .prev { left: 20px; } .next { right: 20px; }
+
+        /* --- PANELES Y ESTILOS --- */
+        .admin-panel { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        h2 { border-bottom: 2px solid #16423c; padding-bottom: 8px; color: #16423c; margin-top: 0; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        button.btn-accion { background: #16423c; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        button.btn-accion:hover { background: #0f2c28; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 14px; }
+        th { background: #e9efee; }
+        .resumen-box { background: #e2f0ed; padding: 15px; border-radius: 6px; margin-top: 15px; display: flex; justify-content: space-around; font-weight: bold; flex-wrap: wrap; gap: 10px; }
+        
+        /* --- ESTILO REMITO PARA IMPRESIÓN --- */
+        #remitoModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
+        .remito-content { background: white; width: 500px; padding: 30px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .remito-header { text-align: center; border-bottom: 2px dashed #333; padding-bottom: 10px; margin-bottom: 15px; }
+        @media print {
+            body * { visibility: hidden; }
+            #remitoModal, #remitoModal * { visibility: visible; }
+            #remitoModal { position: absolute; left: 0; top: 0; background: white; width: 100%; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CARRUSEL 16:9 -->
+    <div class="carousel-container">
+        <div class="carousel-slide active">
+            <video autoplay muted loop playsinline>
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-set-of-plate-ceramic-dishes-in-a-restaurant-41440-large.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="carousel-slide">
+            <video muted playsinline>
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-smartphone-with-a-green-screen-42997-large.mp4" type="video/mp4">
+            </video>
+        </div>
+        <button class="carousel-btn prev">&#10094;</button>
+        <button class="carousel-btn next">&#10095;</button>
+    </div>
+
+    <div class="container">
+        <h1>Panel de Gestión Comercial y Stock</h1>
+
+        <!-- 1. GESTIÓN DE PRODUCTOS Y REPOSICIÓN -->
+        <div class="admin-panel">
+            <h2>1. Inventario y Reposición de Stock</h2>
+            <div class="form-grid">
+                <input type="text" id="pNombre" placeholder="Nombre del Producto">
+                <input type="number" id="pCosto" placeholder="Precio de Costo / Compra ($)">
+                <input type="number" id="pPrecioNormal" placeholder="Precio de Venta Normal ($)">
+                <input type="number" id="pStockInicial" placeholder="Cantidad Inicial (Unidades)">
+            </div>
+            <button class="btn-accion" onclick="guardarProducto()">Crear / Registrar Producto</button>
+            
+            <h3 style="margin-top:25px; color:#16423c;">Reponer Stock Existente</h3>
+            <div class="form-grid">
+                <select id="repoProducto"></select>
+                <input type="number" id="repoCantidad" placeholder="Unidades a sumar">
+                <input type="number" id="repoCostoReal" placeholder="Precio de compra real hoy ($)">
+            </div>
+            <button class="btn-accion" onclick="reponerStock()">Actualizar y Sumar Stock</button>
+
+            <table id="tablaInventario">
+                <thead>
+                    <tr><th>Producto</th><th>Stock Actual</th><th>Costo Compra</th><th>Última Compra</th><th>Precio Normal</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- 2. CLIENTES Y PRECIOS ESPECIALES -->
+        <div class="admin-panel">
+            <h2>2. Clientes y Precios Especiales (ej. Miguel)</h2>
+            <div class="form-grid">
+                <input type="text" id="cNombre" placeholder="Nombre (Ej. Miguel)">
+                <select id="cProductoFavorito">
+                    <option value="">Producto Habitual...</option>
+                </select>
+                <input type="number" id="cPrecioEspecial" placeholder="Precio Especial para este cliente ($)">
+            </div>
+            <button class="btn-accion" onclick="guardarCliente()">Registrar Cliente con Descuento</button>
+            <table id="tablaClientes">
+                <thead>
+                    <tr><th>Cliente</th><th>Producto Habitual</th><th>Precio Especial</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- 3. REGISTRAR VENTA Y REMITO -->
+        <div class="admin-panel">
+            <h2>3. Registrar Venta y Generar Remito</h2>
+            <div class="form-grid">
+                <select id="vCliente" onchange="cargarPreferenciaCliente()"></select>
+                <select id="vProducto" onchange="ajustarPrecioVenta()"></select>
+                <input type="number" id="vCantidad" placeholder="Cantidad" value="1" min="1">
+                <input type="number" id="vPrecioUnitario" placeholder="Precio Final Unitario ($)">
+            </div>
+            <button class="btn-accion" onclick="procesarVenta()">Procesar Venta y Generar Remito</button>
+            <table id="tablaVentas">
+                <thead>
+                    <tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Cant</th><th>Total ($)</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- 4. CIERRE Y GANANCIAS DEL MES -->
+        <div class="admin-panel">
+            <h2>4. Cierre y Porcentaje de Ganancia (Mes Actual)</h2>
+            <div class="resumen-box">
+                <div>Total Ventas: <span id="resVentas">$0</span></div>
+                <div>Total Inversión/Compras: <span id="resCompras">$0</span></div>
+                <div>Ganancia Neta: <span id="resGanancia">$0</span></div>
+                <div>Rentabilidad General: <span id="resRentabilidad">0%</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE REMITO -->
+    <div id="remitoModal">
+        <div class="remito-content">
+            <div class="remito-header">
+                <h2>REMITO DE ENTREGA</h2>
+                <p id="remitoFecha">Fecha: --/--/----</p>
+            </div>
+            <p><strong>Cliente:</strong> <span id="remitoCliente">--</span></p>
+            <p><strong>Detalle:</strong> <span id="remitoDetalle">--</span></p>
+            <p><strong>Cantidad:</strong> <span id="remitoCantidad">--</span></p>
+            <h3 style="text-align:right;">Total: <span id="remitoTotal">$0</span></h3>
+            <div style="text-align:center; margin-top:20px;" class="no-print">
+                <button class="btn-accion" onclick="window.print()">Imprimir / Guardar PDF</button>
+                <button onclick="cerrarRemito()" style="padding:10px; background:#ccc; border:none; border-radius:4px; cursor:pointer; margin-left:10px;">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* --- CARRUSEL JS --- */
+        const slides = document.querySelectorAll(".carousel-slide");
+        const nextBtn = document.querySelector(".next");
+        const prevBtn = document.querySelector(".prev");
+        let currentIndex = 0;
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                const video = slide.querySelector("video");
+                if (i === index) { slide.classList.add("active"); if(video) { video.currentTime = 0; video.play().catch(e=>{}); } }
+                else { slide.classList.remove("active"); if(video) video.pause(); }
+            });
+        }
+        if(nextBtn) nextBtn.addEventListener("click", () => { currentIndex = (currentIndex + 1) % slides.length; showSlide(currentIndex); });
+        if(prevBtn) prevBtn.addEventListener("click", () => { currentIndex = (currentIndex - 1 + slides.length) % slides.length; showSlide(currentIndex); });
+        showSlide(currentIndex);
+
+        /* --- BASE DE DATOS LOCAL --- */
+        let inventario = JSON.parse(localStorage.getItem('sys_inventario')) || [];
+        let clientes = JSON.parse(localStorage.getItem('sys_clientes')) || [];
+        let ventas = JSON.parse(localStorage.getItem('sys_ventas')) || [];
+
+        function persistir() {
+            localStorage.setItem('sys_inventario', JSON.stringify(inventario));
+            localStorage.setItem('sys_clientes', JSON.stringify(clientes));
+            localStorage.setItem('sys_ventas', JSON.stringify(ventas));
+            actualizarSelects();
+            renderTablas();
+            calcularFinanzasMes();
+        }
+
+        function guardarProducto() {
+            let nombre = document.getElementById('pNombre').value;
+            let costo = parseFloat(document.getElementById('pCosto').value) || 0;
+            let precioNormal = parseFloat(document.getElementById('pPrecioNormal').value) || 0;
+            let stock = parseInt(document.getElementById('pStockInicial').value) || 0;
+            if(!nombre) return alert('Ingresa el nombre del producto');
+
+            inventario.push({ 
+                id: Date.now(), 
+                nombre, 
+                costo, 
+                precioNormal, 
+                stock, 
+                fechaCompra: new Date().toLocaleDateString() 
+            });
+            persistir();
+            alert('¡Producto creado con éxito!');
+        }
+
+        function reponerStock() {
+            let id = document.getElementById('repoProducto').value;
+            let cantExtra = parseInt(document.getElementById('repoCantidad').value) || 0;
+            let costoNuevo = parseFloat(document.getElementById('repoCostoReal').value);
+
+            let prod = inventario.find(p => p.id == id);
+            if(!prod || cantExtra <= 0) return alert('Selecciona un producto y cantidad válida');
+
+            prod.stock += cantExtra;
+            if(!isNaN(costoNuevo)) prod.costo = costoNuevo;
+            prod.fechaCompra = new Date().toLocaleDateString();
+
+            persistir();
+            alert('¡Stock repuesto correctamente!');
+        }
+
+        function guardarCliente() {
+            let nombre = document.getElementById('cNombre').value;
+            let productoId = document.getElementById('cProductoFavorito').value;
+            let precioEspecial = parseFloat(document.getElementById('cPrecioEspecial').value) || 0;
+            if(!nombre) return alert('Ingresa el nombre del cliente');
+
+            clientes.push({ id: Date.now(), nombre, productoId, precioEspecial });
+            persistir();
+            alert('¡Cliente registrado con éxito!');
+        }
+
+        function actualizarSelects() {
+            let sRepo = document.getElementById('repoProducto');
+            let sCliFav = document.getElementById('cProductoFavorito');
+            let sVClie = document.getElementById('vCliente');
+            let sVProd = document.getElementById('vProducto');
+
+            sRepo.innerHTML = '<option value="">Seleccionar producto a reponer</option>';
+            sCliFav.innerHTML = '<option value="">Producto Habitual...</option>';
+            sVClie.innerHTML = '<option value="">Seleccione Cliente...</option>';
+            sVProd.innerHTML = '<option value="">Seleccione Producto...</option>';
+
+            inventario.forEach(p => {
+                let opt = `<option value="${p.id}">${p.nombre} (Stock: ${p.stock})</option>`;
+                sRepo.innerHTML += opt;
+                sCliFav.innerHTML += opt;
+                sVProd.innerHTML += `<option value="${p.id}" data-precio="${p.precioNormal}" data-costo="${p.costo}">${p.nombre} ($${p.precioNormal})</option>`;
+            });
+
+            clientes.forEach(c => {
+                sVClie.innerHTML += `<option value="${c.id}" data-fav="${c.productoId}" data-especial="${c.precioEspecial}">${c.nombre}</option>`;
+            });
+        }
+
+        function cargarPreferenciaCliente() {
+            let sVClie = document.getElementById('vCliente');
+            let opt = sVClie.options[sVClie.selectedIndex];
+            let prodFav = opt.getAttribute('data-fav');
+            let precioEsp = opt.getAttribute('data-especial');
+
+            if(prodFav && prodFav !== "null") {
+                document.getElementById('vProducto').value = prodFav;
+                if(precioEsp && precioEsp > 0) {
+                    document.getElementById('vPrecioUnitario').value = precioEsp;
+                }
+            }
+        }
+
+        function ajustarPrecioVenta() {
+            let sVProd = document.getElementById('vProducto');
+            let opt = sVProd.options[sVProd.selectedIndex];
+            let precioNorm = opt.getAttribute('data-precio') || 0;
+            
+            // Si el cliente seleccionado tiene precio especial para este producto, lo respeta, sino pone el normal
+            let sVClie = document.getElementById('vCliente');
+            let optCli = sVClie.options[sVClie.selectedIndex];
+            let prodFav = optCli.getAttribute('data-fav');
+            let precioEsp = parseFloat(optCli.getAttribute('data-especial')) || 0;
+
+            if(prodFav == sVProd.value && precioEsp > 0) {
+                document.getElementById('vPrecioUnitario').value = precioEsp;
+            } else {
+                document.getElementById('vPrecioUnitario').value = precioNorm;
+            }
+        }
+
+        function procesarVenta() {
+            let clienteId = document.getElementById('vCliente').value;
+            let productoId = document.getElementById('vProducto').value;
+            let cantidad = parseInt(document.getElementById('vCantidad').value) || 0;
+            let precioU = parseFloat(document.getElementById('vPrecioUnitario').value) || 0;
+
+            if(!clienteId || !productoId || cantidad <= 0) return alert('Completa todos los datos de la venta');
+
+            let prod = inventario.find(p => p.id == productoId);
+            let cli = clientes.find(c => c.id == clienteId);
+
+            if(prod.stock < cantidad) return alert('¡Stock insuficiente para completar la venta!');
+
+            prod.stock -= cantidad;
+            let totalVenta = cantidad * precioU;
+            let totalCosto = cantidad * prod.costo;
+            let fechaActual = new Date().toLocaleDateString();
+
+            ventas.push({ fecha: fechaActual, cliente: cli ? cli.nombre : 'General', producto: prod.nombre, cantidad, totalVenta, totalCosto });
+            persistir();
+
+            // MOSTRAR REMITO
+            document.getElementById('remitoFecha').innerText = `Fecha: ${fechaActual}`;
+            document.getElementById('remitoCliente').innerText = cli ? cli.nombre : 'General';
+            document.getElementById('remitoDetalle').innerText = prod.nombre;
+            document.getElementById('remitoCantidad').innerText = cantidad;
+            document.getElementById('remitoTotal').innerText = `$${totalVenta}`;
+            document.getElementById('remitoModal').style.display = 'flex';
+        }
+
+        function cerrarRemito() {
+            document.getElementById('remitoModal').style.display = 'none';
+        }
+
+        function renderTablas() {
+            let tInv = document.querySelector('#tablaInventario tbody');
+            tInv.innerHTML = inventario.map(p => `<tr><td>${p.nombre}</td><td><b>${p.stock}</b></td><td>$${p.costo}</td><td>${p.fechaCompra || '-'}</td><td>$${p.precioNormal}</td></tr>`).join('');
+
+            let tCli = document.querySelector('#tablaClientes tbody');
+            tCli.innerHTML = clientes.map(c => {
+                let p = invent.find ? '' : inventario.find(x => x.id == c.productoId);
+                return `<tr><td>${c.nombre}</td><td>${p ? p.nombre : '-'}</td><td>$${c.precioEspecial || 0}</td></tr>`;
+            }).join('');
+
+            let tVen = document.querySelector('#tablaVentas tbody');
+            tVen.innerHTML = ventas.map(v => `<tr><td>${v.fecha}</td><td>${v.cliente}</td><td>${v.producto}</td><td>${v.cantidad}</td><td>$${v.totalVenta}</td></tr>`).join('');
+        }
+
+        function calcularFinanzasMes() {
+            let totalVentas = ventas.reduce((acc, v) => acc + v.totalVenta, 0);
+            // El total de compras del mes se calcula en base al costo de lo vendido o registrado
+            let totalInversion = ventas.reduce((acc, v) => acc + v.totalCosto, 0);
+            let gananciaNeta = totalVentas - totalInversion;
+            let rentabilidad = totalInversion > 0 ? (gananciaNeta / totalInversion) * 100 : 0;
+
+            document.getElementById('resVentas').innerText = `$${totalVentas}`;
+            document.getElementById('resCompras').innerText = `$${totalInversion}`;
+            document.getElementById('resGanancia').innerText = `$${gananciaNeta}`;
+            document.getElementById('resRentabilidad').innerText = `${rentabilidad.toFixed(2)}%`;
+        }
+
+        // Inicializar
+        actualizarSelects();
+        renderTablas();
+        calcularFinanzasMes();
+    </script>
+</body>
+</html>
