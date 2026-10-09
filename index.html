@@ -3,10 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Tienda + Panel de Dueño</title>
+    <title>Mi Tienda</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9f9f9; color: #333; }
-        .container { max-width: 1200px; margin: 0 auto 50px auto; padding: 0 20px; box-sizing: border-box; }
+        
+        /* --- BARRA SUPERIOR (NAVBAR) --- */
+        header { background: #16423c; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { margin: 0; font-size: 20px; }
+        .nav-link { color: white; text-decoration: none; cursor: pointer; font-size: 14px; background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 4px; }
+        .nav-link:hover { background: rgba(255,255,255,0.2); }
+
+        .container { max-width: 1200px; margin: 20px auto 50px auto; padding: 0 20px; box-sizing: border-box; }
 
         /* --- CARRUSEL 16:9 --- */
         .carousel-container {
@@ -19,12 +26,13 @@
         .carousel-btn:hover { background: rgba(22, 66, 60, 1); }
         .prev { left: 20px; } .next { right: 20px; }
 
-        /* --- SECCIÓN LOGIN --- */
-        #loginSection { max-width: 400px; margin: 40px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
-        #loginSection input { margin-bottom: 15px; }
+        /* --- VENTANA MODAL DE LOGIN --- */
+        #loginModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 20000; }
+        .login-box { background: white; width: 350px; padding: 30px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; position: relative; }
+        .login-box input { margin-bottom: 15px; width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
 
-        /* --- PANEL DE ADMINISTRACIÓN (OCULTO HASTA LOGIN) --- */
-        #panelAdmin { display: none; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); margin-top: 40px; border: 2px solid #16423c; }
+        /* --- PANEL DE ADMINISTRACIÓN (OCULTO) --- */
+        #panelAdmin { display: none; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); margin-top: 20px; border: 2px solid #16423c; }
         h2 { color: #16423c; margin-top: 0; border-bottom: 2px solid #16423c; padding-bottom: 8px; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
         input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
@@ -49,7 +57,13 @@
 </head>
 <body>
 
-    <!-- 1. VISTA PÚBLICA -->
+    <!-- BARRA SUPERIOR CON ACCESO DISCRETO -->
+    <header>
+        <h1>Mi Tienda Online</h1>
+        <a class="nav-link" id="btnAuth" onclick="manejarAuth()">🔑 Iniciar Sesión</a>
+    </header>
+
+    <!-- VISTA PÚBLICA -->
     <div class="carousel-container">
         <div class="carousel-slide active">
             <video autoplay muted loop playsinline>
@@ -66,23 +80,14 @@
     </div>
 
     <div class="container">
-        <h1 style="text-align:center;">Bienvenido a Nuestra Tienda</h1>
-        <p style="text-align:center; color:#666; margin-bottom:30px;">Explora nuestros productos y novedades.</p>
-
-        <!-- 2. LOGIN DE ACCESO RESTRINGIDO -->
-        <div id="loginSection">
-            <h2>Acceso Dueño</h2>
-            <input type="email" id="emailAdmin" placeholder="Correo electrónico">
-            <input type="password" id="passwordAdmin" placeholder="Contraseña">
-            <button class="btn-accion" onclick="iniciarSesionAdmin()" style="width:100%;">Ingresar al Sistema</button>
+        <div style="text-align:center; margin-bottom:30px;">
+            <h2>Bienvenidos a nuestro catálogo</h2>
+            <p style="color:#666;">Todo lo que tus clientes ven de forma limpia y ordenada.</p>
         </div>
 
-        <!-- 3. PANEL DE ADMINISTRACIÓN (PROTEGIDO) -->
+        <!-- PANEL DE ADMINISTRACIÓN (OCULTO HASTA INICIAR SESIÓN) -->
         <div id="panelAdmin">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #16423c; padding-bottom:8px; margin-bottom:20px;">
-                <h2 style="margin:0; border:none;">Panel de Control y Gestión</h2>
-                <button onclick="cerrarSesionAdmin()" style="background:#d9534f; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;">Cerrar Sesión</button>
-            </div>
+            <h2>Panel de Control y Gestión (Dueño)</h2>
 
             <!-- Inventario y Reposición -->
             <h3 style="color:#16423c;">1. Inventario y Reposición</h3>
@@ -143,6 +148,17 @@
         </div>
     </div>
 
+    <!-- VENTANA MODAL DE LOGIN -->
+    <div id="loginModal">
+        <div class="login-box">
+            <h3>Iniciar Sesión (Dueño)</h3>
+            <input type="email" id="emailAdmin" placeholder="Correo electrónico">
+            <input type="password" id="passwordAdmin" placeholder="Contraseña">
+            <button class="btn-accion" onclick="iniciarSesionAdmin()" style="width:100%; margin-bottom:10px;">Ingresar</button>
+            <button onclick="cerrarModalLogin()" style="background:#ccc; border:none; padding:8px; width:100%; border-radius:4px; cursor:pointer;">Cancelar</button>
+        </div>
+    </div>
+
     <!-- MODAL DE REMITO -->
     <div id="remitoModal">
         <div class="remito-content">
@@ -165,12 +181,27 @@
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-        // ⚠️ REEMPLAZA ESTOS DATOS CON LOS DE TU PROYECTO EN SUPABASE
-        const supabaseUrl = 'https://keimmlszgznrsztdapik.supabase.co';
+        const supabaseUrl = 'TU_SUPABASE_URL';
         const supabaseKey = 'sb_publishable_oogq08tzxSx9BWgwvvWZVg_hflO9pwK';
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        // --- AUTENTICACIÓN ---
+        let sesionActiva = false;
+
+        window.manejarAuth = async function() {
+            if (sesionActiva) {
+                if(confirm("¿Deseas cerrar sesión?")) {
+                    await supabase.auth.signOut();
+                    verificarSesion();
+                }
+            } else {
+                document.getElementById('loginModal').style.display = 'flex';
+            }
+        }
+
+        window.cerrarModalLogin = function() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
         window.iniciarSesionAdmin = async function() {
             const email = document.getElementById('emailAdmin').value;
             const password = document.getElementById('passwordAdmin').value;
@@ -179,24 +210,25 @@
             if (error) {
                 alert("Error de acceso: " + error.message);
             } else {
+                cerrarModalLogin();
                 verificarSesion();
             }
         }
 
-        window.cerrarSesionAdmin = async function() {
-            await supabase.auth.signOut();
-            verificarSesion();
-        }
-
         async function verificarSesion() {
             const { data: { session } } = await supabase.auth.getSession();
+            const btnAuth = document.getElementById('btnAuth');
+            const panelAdmin = document.getElementById('panelAdmin');
+
             if (session) {
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('panelAdmin').style.display = 'block';
+                sesionActiva = true;
+                btnAuth.innerText = "🚪 Cerrar Sesión";
+                panelAdmin.style.display = 'block';
                 cargarDatosDesdeSupabase();
             } else {
-                document.getElementById('loginSection').style.display = 'block';
-                document.getElementById('panelAdmin').style.display = 'none';
+                sesionActiva = false;
+                btnAuth.innerText = "🔑 Iniciar Sesión";
+                panelAdmin.style.display = 'none';
             }
         }
 
@@ -216,7 +248,6 @@
         if(prevBtn) prevBtn.addEventListener("click", () => { currentIndex = (currentIndex - 1 + slides.length) % slides.length; showSlide(currentIndex); });
         showSlide(currentIndex);
 
-        // --- VARIABLES DE DATOS ---
         let inventario = [];
         let clientes = [];
         let ventas = [];
@@ -391,7 +422,6 @@
             document.getElementById('resRentabilidad').innerText = `${rentabilidad.toFixed(2)}%`;
         }
 
-        // Verificar sesión activa al cargar la página
         verificarSesion();
     </script>
 </body>
