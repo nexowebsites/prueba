@@ -19,16 +19,12 @@
         .carousel-btn:hover { background: rgba(22, 66, 60, 1); }
         .prev { left: 20px; } .next { right: 20px; }
 
-        /* --- BOTÓN FLOTANTE PARA EL DUEÑO --- */
-        #btnAdminFlotante {
-            position: fixed; bottom: 20px; right: 20px; background: #16423c; color: white; border: none; padding: 12px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 9999;
-        }
-        #btnAdminFlotante:hover { background: #0f2c28; }
+        /* --- SECCIÓN LOGIN --- */
+        #loginSection { max-width: 400px; margin: 40px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        #loginSection input { margin-bottom: 15px; }
 
-        /* --- PANEL DE ADMINISTRACIÓN (OCULTO POR DEFECTO) --- */
-        #panelAdmin {
-            display: none; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); margin-top: 40px; border: 2px dashed #16423c;
-        }
+        /* --- PANEL DE ADMINISTRACIÓN (OCULTO HASTA LOGIN) --- */
+        #panelAdmin { display: none; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); margin-top: 40px; border: 2px solid #16423c; }
         h2 { color: #16423c; margin-top: 0; border-bottom: 2px solid #16423c; padding-bottom: 8px; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
         input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
@@ -53,7 +49,7 @@
 </head>
 <body>
 
-    <!-- 1. VISTA PÚBLICA DE LA PÁGINA -->
+    <!-- 1. VISTA PÚBLICA -->
     <div class="carousel-container">
         <div class="carousel-slide active">
             <video autoplay muted loop playsinline>
@@ -71,19 +67,25 @@
 
     <div class="container">
         <h1 style="text-align:center;">Bienvenido a Nuestra Tienda</h1>
-        <p style="text-align:center; color:#666;">Aquí tus clientes solo verán el contenido principal, tus productos y promociones de forma limpia y ordenada.</p>
+        <p style="text-align:center; color:#666; margin-bottom:30px;">Explora nuestros productos y novedades.</p>
 
-        <!-- BOTÓN SECRETO / FLOTANTE PARA EL DUEÑO -->
-        <button id="btnAdminFlotante" onclick="activarAdmin()">🔒 Acceso Dueño</button>
+        <!-- 2. LOGIN DE ACCESO RESTRINGIDO -->
+        <div id="loginSection">
+            <h2>Acceso Dueño</h2>
+            <input type="email" id="emailAdmin" placeholder="Correo electrónico">
+            <input type="password" id="passwordAdmin" placeholder="Contraseña">
+            <button class="btn-accion" onclick="iniciarSesionAdmin()" style="width:100%;">Ingresar al Sistema</button>
+        </div>
 
-        <!-- 2. PANEL DE ADMINISTRACIÓN (OCULTO HASTA PONER CONTRASEÑA) -->
+        <!-- 3. PANEL DE ADMINISTRACIÓN (PROTEGIDO) -->
         <div id="panelAdmin">
-            <h2>Panel de Control Exclusivo (Dueño)</h2>
-            <button onclick="cerrarAdmin()" style="float:right; background:#ccc; border:none; padding:5px 10px; cursor:pointer; border-radius:4px;">Cerrar Panel</button>
-            <div style="clear:both; margin-bottom:15px;"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #16423c; padding-bottom:8px; margin-bottom:20px;">
+                <h2 style="margin:0; border:none;">Panel de Control y Gestión</h2>
+                <button onclick="cerrarSesionAdmin()" style="background:#d9534f; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;">Cerrar Sesión</button>
+            </div>
 
-            <!-- Reposición de Stock -->
-            <h3 style="color:#16423c;">Inventario y Reposición</h3>
+            <!-- Inventario y Reposición -->
+            <h3 style="color:#16423c;">1. Inventario y Reposición</h3>
             <div class="form-grid">
                 <input type="text" id="pNombre" placeholder="Nombre del Producto">
                 <input type="number" id="pCosto" placeholder="Precio de Costo ($)">
@@ -104,11 +106,11 @@
             </table>
 
             <!-- Clientes -->
-            <h3 style="color:#16423c; margin-top:25px;">Clientes y Descuentos Especiales</h3>
+            <h3 style="color:#16423c; margin-top:25px;">2. Clientes y Precios Especiales</h3>
             <div class="form-grid">
                 <input type="text" id="cNombre" placeholder="Nombre (Ej. Miguel)">
                 <select id="cProductoFavorito"><option value="">Producto Habitual...</option></select>
-                <input type="number" id="cPrecioEspecial" placeholder="Precio con Descuento ($)">
+                <input type="number" id="cPrecioEspecial" placeholder="Precio Especial ($)">
             </div>
             <button class="btn-accion" onclick="guardarCliente()">Guardar Cliente</button>
             <table id="tablaClientes">
@@ -117,7 +119,7 @@
             </table>
 
             <!-- Ventas -->
-            <h3 style="color:#16423c; margin-top:25px;">Registrar Venta y Generar Remito</h3>
+            <h3 style="color:#16423c; margin-top:25px;">3. Registrar Venta y Generar Remito</h3>
             <div class="form-grid">
                 <select id="vCliente" onchange="cargarPreferenciaCliente()"></select>
                 <select id="vProducto" onchange="ajustarPrecioVenta()"></select>
@@ -131,7 +133,7 @@
             </table>
 
             <!-- Finanzas -->
-            <h3 style="color:#16423c; margin-top:25px;">Cierre y Rentabilidad del Mes</h3>
+            <h3 style="color:#16423c; margin-top:25px;">4. Cierre y Rentabilidad del Mes</h3>
             <div class="resumen-box">
                 <div>Ventas: <span id="resVentas">$0</span></div>
                 <div>Costos: <span id="resCompras">$0</span></div>
@@ -159,26 +161,46 @@
         </div>
     </div>
 
-    <script>
-        /* --- CONTRASEÑA DE ACCESO --- */
-        const CLAVE_SECRETA = "1234"; // Puedes cambiarla por la que quieras
+    <!-- SCRIPT DE SUPABASE Y LÓGICA -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-        function activarAdmin() {
-            let password = prompt("Ingresa la clave de administrador:");
-            if (password === CLAVE_SECRETA) {
-                document.getElementById('panelAdmin').style.display = 'block';
-                window.scrollTo({ top: document.getElementById('panelAdmin').offsetTop, behavior: 'smooth' });
-            } else if (password !== null) {
-                alert("Clave incorrecta");
+        // ⚠️ REEMPLAZA ESTOS DATOS CON LOS DE TU PROYECTO EN SUPABASE
+        const supabaseUrl = 'https://keimmlszgznrsztdapik.supabase.co/rest/v1/';
+        const supabaseKey = 'sb_publishable_oogq08tzxSx9BWgwvvWZVg_hflO9pwK';
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        // --- AUTENTICACIÓN ---
+        window.iniciarSesionAdmin = async function() {
+            const email = document.getElementById('emailAdmin').value;
+            const password = document.getElementById('passwordAdmin').value;
+
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                alert("Error de acceso: " + error.message);
+            } else {
+                verificarSesion();
             }
         }
 
-        function cerrarAdmin() {
-            document.getElementById('panelAdmin').style.display = 'none';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.cerrarSesionAdmin = async function() {
+            await supabase.auth.signOut();
+            verificarSesion();
         }
 
-        /* --- CARRUSEL --- */
+        async function verificarSesion() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('panelAdmin').style.display = 'block';
+                cargarDatosDesdeSupabase();
+            } else {
+                document.getElementById('loginSection').style.display = 'block';
+                document.getElementById('panelAdmin').style.display = 'none';
+            }
+        }
+
+        // --- CARRUSEL ---
         const slides = document.querySelectorAll(".carousel-slide");
         const nextBtn = document.querySelector(".next");
         const prevBtn = document.querySelector(".prev");
@@ -194,51 +216,69 @@
         if(prevBtn) prevBtn.addEventListener("click", () => { currentIndex = (currentIndex - 1 + slides.length) % slides.length; showSlide(currentIndex); });
         showSlide(currentIndex);
 
-        /* --- LÓGICA DEL SISTEMA --- */
-        let inventario = JSON.parse(localStorage.getItem('sys_inventario')) || [];
-        let clientes = JSON.parse(localStorage.getItem('sys_clientes')) || [];
-        let ventas = JSON.parse(localStorage.getItem('sys_ventas')) || [];
+        // --- VARIABLES DE DATOS ---
+        let inventario = [];
+        let clientes = [];
+        let ventas = [];
 
-        function persistir() {
-            localStorage.setItem('sys_inventario', JSON.stringify(inventario));
-            localStorage.setItem('sys_clientes', JSON.stringify(clientes));
-            localStorage.setItem('sys_ventas', JSON.stringify(ventas));
+        async function cargarDatosDesdeSupabase() {
+            let resProd = await supabase.from('productos').select('*');
+            inventario = resProd.data || [];
+
+            let resCli = await supabase.from('clientes').select('*');
+            clientes = resCli.data || [];
+
+            let resVen = await supabase.from('ventas').select('*');
+            ventas = resVen.data || [];
+
             actualizarSelects();
             renderTablas();
             calcularFinanzasMes();
         }
 
-        function guardarProducto() {
+        window.guardarProducto = async function() {
             let nombre = document.getElementById('pNombre').value;
             let costo = parseFloat(document.getElementById('pCosto').value) || 0;
             let precioNormal = parseFloat(document.getElementById('pPrecioNormal').value) || 0;
             let stock = parseInt(document.getElementById('pStockInicial').value) || 0;
             if(!nombre) return alert('Ingresa el nombre');
-            inventario.push({ id: Date.now(), nombre, costo, precioNormal, stock });
-            persistir();
-            alert('¡Guardado!');
+
+            let { error } = await supabase.from('productos').insert([{ nombre, costo, precioNormal, stock }]);
+            if(error) return alert("Error: " + error.message);
+            
+            alert('¡Producto guardado!');
+            cargarDatosDesdeSupabase();
         }
 
-        function reponerStock() {
+        window.reponerStock = async function() {
             let id = document.getElementById('repoProducto').value;
             let cant = parseInt(document.getElementById('repoCantidad').value) || 0;
             let costoNuevo = parseFloat(document.getElementById('repoCostoReal').value);
             let prod = inventario.find(p => p.id == id);
             if(!prod || cant <= 0) return alert('Selecciona producto y cantidad');
-            prod.stock += cant;
-            if(!isNaN(costoNuevo)) prod.costo = costoNuevo;
-            persistir();
+
+            let nuevoStock = prod.stock + cant;
+            let datosUpdate = { stock: nuevoStock };
+            if(!isNaN(costoNuevo)) datosUpdate.costo = costoNuevo;
+
+            let { error } = await supabase.from('productos').update(datosUpdate).eq('id', id);
+            if(error) return alert("Error: " + error.message);
+
             alert('¡Stock actualizado!');
+            cargarDatosDesdeSupabase();
         }
 
-        function guardarCliente() {
+        window.guardarCliente = async function() {
             let nombre = document.getElementById('cNombre').value;
-            let productoId = document.getElementById('cProductoFavorito').value;
+            let productoId = document.getElementById('cProductoFavorito').value || null;
             let precioEspecial = parseFloat(document.getElementById('cPrecioEspecial').value) || 0;
             if(!nombre) return alert('Ingresa el nombre');
-            clientes.push({ id: Date.now(), nombre, productoId, precioEspecial });
-            persistir();
+
+            let { error } = await supabase.from('clientes').insert([{ nombre, productoId, precioEspecial }]);
+            if(error) return alert("Error: " + error.message);
+
             alert('¡Cliente guardado!');
+            cargarDatosDesdeSupabase();
         }
 
         function actualizarSelects() {
@@ -264,7 +304,7 @@
             });
         }
 
-        function cargarPreferenciaCliente() {
+        window.cargarPreferenciaCliente = function() {
             let opt = document.getElementById('vCliente').options[document.getElementById('vCliente').selectedIndex];
             let prodFav = opt.getAttribute('data-fav');
             let precioEsp = opt.getAttribute('data-especial');
@@ -274,7 +314,7 @@
             }
         }
 
-        function ajustarPrecioVenta() {
+        window.ajustarPrecioVenta = function() {
             let sVProd = document.getElementById('vProducto');
             let precioNorm = sVProd.options[sVProd.selectedIndex].getAttribute('data-precio') || 0;
             let optCli = document.getElementById('vCliente').options[document.getElementById('vCliente').selectedIndex];
@@ -288,7 +328,7 @@
             }
         }
 
-        function procesarVenta() {
+        window.procesarVenta = async function() {
             let clienteId = document.getElementById('vCliente').value;
             let productoId = document.getElementById('vProducto').value;
             let cantidad = parseInt(document.getElementById('vCantidad').value) || 0;
@@ -300,13 +340,23 @@
 
             if(prod.stock < cantidad) return alert('¡Stock insuficiente!');
 
-            prod.stock -= cantidad;
+            let nuevoStock = prod.stock - cantidad;
+            await supabase.from('productos').update({ stock: nuevoStock }).eq('id', productoId);
+
             let totalVenta = cantidad * precioU;
             let totalCosto = cantidad * prod.costo;
             let fechaActual = new Date().toLocaleDateString();
 
-            ventas.push({ fecha: fechaActual, cliente: cli ? cli.nombre : 'General', producto: prod.nombre, cantidad, totalVenta, totalCosto });
-            persistir();
+            let { error } = await supabase.from('ventas').insert([{
+                fecha: fechaActual,
+                cliente: cli ? cli.nombre : 'General',
+                producto: prod.nombre,
+                cantidad,
+                totalVenta,
+                totalCosto
+            }]);
+
+            if(error) return alert("Error al registrar venta: " + error.message);
 
             document.getElementById('remitoFecha').innerText = `Fecha: ${fechaActual}`;
             document.getElementById('remitoCliente').innerText = cli ? cli.nombre : 'General';
@@ -314,9 +364,11 @@
             document.getElementById('remitoCantidad').innerText = cantidad;
             document.getElementById('remitoTotal').innerText = `$${totalVenta}`;
             document.getElementById('remitoModal').style.display = 'flex';
+
+            cargarDatosDesdeSupabase();
         }
 
-        function cerrarRemito() { document.getElementById('remitoModal').style.display = 'none'; }
+        window.cerrarRemito = function() { document.getElementById('remitoModal').style.display = 'none'; }
 
         function renderTablas() {
             document.querySelector('#tablaInventario tbody').innerHTML = inventario.map(p => `<tr><td>${p.nombre}</td><td><b>${p.stock}</b></td><td>$${p.costo}</td><td>$${p.precioNormal}</td></tr>`).join('');
@@ -339,9 +391,8 @@
             document.getElementById('resRentabilidad').innerText = `${rentabilidad.toFixed(2)}%`;
         }
 
-        actualizarSelects();
-        renderTablas();
-        calcularFinanzasMes();
+        // Verificar sesión activa al cargar la página
+        verificarSesion();
     </script>
 </body>
 </html>
