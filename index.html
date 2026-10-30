@@ -1,429 +1,807 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Tienda</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9f9f9; color: #333; }
-        
-        /* --- BARRA SUPERIOR (NAVBAR) --- */
-        header { background: #16423c; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { margin: 0; font-size: 20px; }
-        .nav-link { color: white; text-decoration: none; cursor: pointer; font-size: 14px; background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 4px; }
-        .nav-link:hover { background: rgba(255,255,255,0.2); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema para distribuidores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --verde:#16423c; --verde-osc:#0f2c28; --verde-claro:#e2f0ed;
+  --ambar:#f0b429; --rojo:#c0392b;
+  --fondo:#f5f8f7; --blanco:#fff; --texto:#1d2b29; --gris:#5f6f6c; --borde:#d9e2e0;
+  --titulos:'Bricolage Grotesque','Segoe UI',Arial,sans-serif;
+  --cuerpo:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;font-family:var(--cuerpo);background:var(--fondo);color:var(--texto);line-height:1.55}
+h1,h2,h3{font-family:var(--titulos);line-height:1.15;margin:0}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
-        .container { max-width: 1200px; margin: 20px auto 50px auto; padding: 0 20px; box-sizing: border-box; }
+/* ---------- BARRA SUPERIOR ---------- */
+header{position:sticky;top:0;z-index:100;background:var(--verde);color:#fff}
+.barra{max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:20px}
+.marca{font-family:var(--titulos);font-weight:800;font-size:20px;color:#fff;text-decoration:none;margin-right:auto}
+.menu{display:flex;gap:6px}
+.menu a{color:#d6e6e3;text-decoration:none;font-size:14px;padding:8px 12px;border-radius:6px}
+.menu a:hover{background:rgba(255,255,255,.12);color:#fff}
+.acceso{display:flex;gap:8px;align-items:center}
+.btn-login{background:#fff;color:var(--verde);border:none;font-weight:700;font-size:14px;padding:9px 16px;border-radius:6px;cursor:pointer}
+.btn-login:hover{background:var(--verde-claro)}
+.btn-panel{background:var(--ambar);color:#2b2100;border:none;font-weight:700;font-size:14px;padding:9px 16px;border-radius:6px;cursor:pointer;display:none;text-decoration:none}
+@media(max-width:760px){.menu{display:none}}
 
-        /* --- CARRUSEL 16:9 --- */
-        .carousel-container {
-            position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 400px; background: #000; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 30px;
-        }
-        .carousel-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; display: flex; align-items: center; justify-content: center; }
-        .carousel-slide.active { opacity: 1; }
-        .carousel-slide img, .carousel-slide video { width: 100%; height: 100%; object-fit: cover; }
-        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(22, 66, 60, 0.7); color: white; border: none; padding: 12px 16px; cursor: pointer; font-size: 16px; border-radius: 50%; z-index: 10; }
-        .carousel-btn:hover { background: rgba(22, 66, 60, 1); }
-        .prev { left: 20px; } .next { right: 20px; }
+/* ---------- PRESENTACIÓN ---------- */
+.hero{background:var(--verde);color:#fff;padding:56px 20px 64px}
+.hero-in{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(32px,5vw,54px);font-weight:800;max-width:15ch}
+.hero p{font-size:18px;color:#cfe3df;max-width:52ch;margin:18px 0 26px}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:13px 22px;border-radius:8px;font-weight:700;text-decoration:none;font-size:15px;border:2px solid transparent;cursor:pointer}
+.btn-claro{background:#fff;color:var(--verde)}
+.btn-borde{border-color:rgba(255,255,255,.5);color:#fff}
+.btn-borde:hover{background:rgba(255,255,255,.1)}
+/* dos vistas */
+.vistas{display:grid;gap:12px}
+.vista{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:18px 20px}
+.vista h3{font-size:18px;margin-bottom:4px}
+.vista p{margin:0;font-size:14.5px;color:#cfe3df}
+.vista.admin{background:#fff;color:var(--texto);border-color:#fff}
+.vista.admin p{color:var(--gris)}
+@media(max-width:860px){.hero-in{grid-template-columns:1fr}}
 
-        /* --- VENTANA MODAL DE LOGIN --- */
-        #loginModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 20000; }
-        .login-box { background: white; width: 350px; padding: 30px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; position: relative; }
-        .login-box input { margin-bottom: 15px; width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+/* ---------- SECCIONES ---------- */
+.seccion{max-width:1200px;margin:0 auto;padding:56px 20px 8px}
+.seccion h2{font-size:clamp(26px,3.4vw,36px);color:var(--verde)}
+.sub{color:var(--gris);margin:8px 0 28px;max-width:62ch}
 
-        /* --- PANEL DE ADMINISTRACIÓN (OCULTO) --- */
-        #panelAdmin { display: none; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); margin-top: 20px; border: 2px solid #16423c; }
-        h2 { color: #16423c; margin-top: 0; border-bottom: 2px solid #16423c; padding-bottom: 8px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
-        button.btn-accion { background: #16423c; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        button.btn-accion:hover { background: #0f2c28; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 14px; }
-        th { background: #e9efee; }
-        .resumen-box { background: #e2f0ed; padding: 15px; border-radius: 6px; margin-top: 15px; display: flex; justify-content: space-around; font-weight: bold; flex-wrap: wrap; gap: 10px; }
+/* catálogo */
+.buscador{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.buscador input{flex:1;min-width:220px;padding:12px 14px;border:1px solid var(--borde);border-radius:8px;font-size:15px;background:#fff}
+.aviso-demo{background:#fff6dc;border:1px solid #f0d58a;border-radius:8px;padding:10px 14px;font-size:14px;margin-bottom:18px;display:none}
+.grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.prod{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.prod h3{font-size:18px}
+.precio{font-family:var(--titulos);font-size:26px;font-weight:700;color:var(--verde)}
+.estado{font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.estado::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor}
+.ok{color:#1b7a4b}.poco{color:#a87100}.nada{color:var(--rojo)}
+.vacio{padding:30px;text-align:center;color:var(--gris);background:#fff;border:1px dashed var(--borde);border-radius:10px}
 
-        /* --- ESTILO REMITO --- */
-        #remitoModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 10000; }
-        .remito-content { background: white; width: 450px; padding: 30px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .remito-header { text-align: center; border-bottom: 2px dashed #333; padding-bottom: 10px; margin-bottom: 15px; }
-        @media print {
-            body * { visibility: hidden; }
-            #remitoModal, #remitoModal * { visibility: visible; }
-            #remitoModal { position: absolute; left: 0; top: 0; background: white; width: 100%; }
-            .no-print { display: none; }
-        }
-    </style>
+/* cómo funciona */
+.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;counter-reset:paso}
+.paso{background:#fff;border-left:5px solid var(--verde);border-radius:8px;padding:18px 20px;counter-increment:paso}
+.paso h3{font-size:18px;margin-bottom:6px}
+.paso h3::before{content:counter(paso) ". "}
+.paso p{margin:0;color:var(--gris);font-size:15px}
+
+/* qué incluye */
+.funciones{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.func{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:20px}
+.func h3{font-size:18px;color:var(--verde);margin-bottom:6px}
+.func p{margin:0;color:var(--gris);font-size:15px}
+.func ul{margin:10px 0 0;padding-left:18px;font-size:14px;color:var(--texto)}
+
+/* ---------- PANEL ADMIN ---------- */
+#panelAdmin{display:none;max-width:1200px;margin:56px auto 0;padding:0 20px}
+.panel-caja{background:#fff;border:2px solid var(--verde);border-radius:12px;overflow:hidden}
+.panel-top{background:var(--verde);color:#fff;padding:16px 22px}
+.panel-top h2{font-size:24px;color:#fff;border:0;margin:0}
+.panel-top p{margin:4px 0 0;color:#cfe3df;font-size:14px}
+.tabs{display:flex;gap:4px;padding:12px 16px 0;background:var(--verde-claro);flex-wrap:wrap}
+.tab{border:none;background:transparent;padding:11px 18px;font-size:15px;font-weight:600;color:var(--verde);cursor:pointer;border-radius:8px 8px 0 0}
+.tab.activa{background:#fff}
+.tab-cuerpo{display:none;padding:22px}
+.tab-cuerpo.activa{display:block}
+.tab-cuerpo h3{font-size:19px;color:var(--verde);margin:0 0 4px}
+.ayuda{color:var(--gris);font-size:14px;margin:0 0 14px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px}
+label{display:block;font-size:13px;font-weight:600;color:var(--gris);margin-bottom:4px}
+input,select{padding:10px;border:1px solid #bccac7;border-radius:6px;width:100%;font-size:15px;background:#fff;font-family:inherit}
+.btn-accion{background:var(--verde);color:#fff;border:none;padding:11px 18px;border-radius:6px;cursor:pointer;font-weight:700;font-size:15px}
+.btn-accion:hover{background:var(--verde-osc)}
+.bloque{border-top:1px solid var(--borde);margin-top:24px;padding-top:20px}
+.tabla-wrap{overflow-x:auto;margin-top:14px}
+table{width:100%;border-collapse:collapse;min-width:480px}
+th,td{border-bottom:1px solid var(--borde);padding:10px;text-align:left;font-size:14px}
+th{background:#eef4f3;color:var(--verde)}
+.tarjetas{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:6px}
+.tarjeta{background:var(--verde-claro);border-radius:10px;padding:16px}
+.tarjeta span{display:block;font-size:13px;color:var(--gris);font-weight:600}
+.tarjeta strong{font-family:var(--titulos);font-size:28px;color:var(--verde)}
+.baja{color:var(--rojo);font-weight:700}
+
+.btn-cart{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.5);font-weight:700;font-size:14px;padding:7px 14px;border-radius:6px;cursor:pointer}
+.btn-cart:hover{background:rgba(255,255,255,.12)}
+.prod .btn-accion{margin-top:auto}.prod .btn-accion:disabled{background:#b9c6c3;cursor:not-allowed}
+.item-carrito{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--borde);font-size:14px}
+.item-carrito input{width:70px;padding:6px;margin:0}
+.banner-pago{display:none;max-width:1160px;margin:16px auto 0;padding:14px 20px;border-radius:8px;font-weight:600}
+.link{background:none;border:none;color:var(--verde);text-decoration:underline;cursor:pointer;font-size:14px;padding:0}
+.caja-ancha{max-width:520px;max-height:90vh;overflow:auto}
+/* ---------- MODALES ---------- */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:1000;padding:16px}
+.caja{background:#fff;width:100%;max-width:380px;padding:28px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.3)}
+.caja h3{font-size:22px;color:var(--verde);margin-bottom:4px}
+.caja input{margin-bottom:12px}
+.caja .nota{font-size:13px;color:var(--gris);margin:0 0 14px}
+.btn-sec{background:#e3e8e7;color:var(--texto);border:none;padding:11px 18px;border-radius:6px;cursor:pointer;font-weight:600;font-size:15px}
+.error{color:var(--rojo);font-size:14px;margin:0 0 10px;display:none}
+.remito-caja{max-width:450px}
+.remito-head{text-align:center;border-bottom:2px dashed #333;padding-bottom:10px;margin-bottom:14px}
+.remito-head h3{color:var(--texto)}
+
+footer{margin-top:64px;background:var(--verde-osc);color:#a9c4bf;text-align:center;padding:26px 20px;font-size:14px}
+
+@media print{
+  body *{visibility:hidden}
+  #remitoModal,#remitoModal *{visibility:visible}
+  #remitoModal{position:absolute;inset:0;background:#fff}
+  .no-print{display:none!important}
+}
+</style>
 </head>
 <body>
 
-    <!-- BARRA SUPERIOR CON ACCESO DISCRETO -->
-    <header>
-        <h1>Mi Tienda Online</h1>
-        <a class="nav-link" id="btnAuth" onclick="manejarAuth()">🔑 Iniciar Sesión</a>
-    </header>
+<!-- ===== BARRA SUPERIOR: el acceso del administrador va arriba a la derecha ===== -->
+<header>
+  <div class="barra">
+    <a class="marca" href="#inicio" id="nombreMarca">Mi Distribuidora</a>
+    <nav class="menu" aria-label="Secciones">
+      <a href="#catalogo">Productos</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#que-incluye">Qué incluye</a>
+    </nav>
+    <div class="acceso">
+      <button class="btn-cart" id="btnCarrito" onclick="abrirCarrito()">Carrito (<span id="cantCarrito">0</span>)</button>
+      <a class="btn-panel" id="btnPanel" href="#panelAdmin">Ir al panel</a>
+      <button class="btn-login" id="btnAuth" onclick="manejarAuth()">Iniciar sesión</button>
+    </div>
+  </div>
+</header>
+<div class="banner-pago" id="bannerPago"></div>
 
-    <!-- VISTA PÚBLICA -->
-    <div class="carousel-container">
-        <div class="carousel-slide active">
-            <video autoplay muted loop playsinline>
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-set-of-plate-ceramic-dishes-in-a-restaurant-41440-large.mp4" type="video/mp4">
-            </video>
-        </div>
-        <div class="carousel-slide">
-            <video muted playsinline>
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-smartphone-with-a-green-screen-42997-large.mp4" type="video/mp4">
-            </video>
-        </div>
-        <button class="carousel-btn prev">&#10094;</button>
-        <button class="carousel-btn next">&#10095;</button>
+<!-- ===== PRESENTACIÓN ===== -->
+<section class="hero" id="inicio">
+  <div class="hero-in">
+    <div>
+      <h1>Tu stock, tus clientes y tus ventas en un solo lugar</h1>
+      <p>Tus clientes ven el catálogo, crean su cuenta con su correo y pagan con Mercado Pago. Vos administrás stock, ventas y pedidos desde un panel privado.</p>
+      <div class="hero-btns">
+        <a class="btn btn-claro" href="#catalogo">Ver productos</a>
+        <a class="btn btn-borde" href="#como-funciona">Cómo funciona</a>
+      </div>
+    </div>
+    <div class="vistas">
+      <div class="vista">
+        <h3>Para tus clientes</h3>
+        <p>Ven los productos sin cuenta. Para comprar, se registran con su correo y pagan con Mercado Pago.</p>
+      </div>
+      <div class="vista admin">
+        <h3>Para el administrador</h3>
+        <p>Solo el correo del administrador accede al panel: inventario, clientes, pedidos, ventas y ganancias.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CATÁLOGO PÚBLICO ===== -->
+<section class="seccion" id="catalogo">
+  <h2>Productos</h2>
+  <p class="sub">Esto es lo que ve cualquier persona que entra a la página. Los precios y la disponibilidad se actualizan solos cuando el administrador carga stock o registra una venta.</p>
+  <div class="aviso-demo" id="avisoDemo">Estás viendo productos de ejemplo. Cuando el administrador cargue sus productos reales, aparecerán acá.</div>
+  <div class="buscador">
+    <input type="search" id="buscar" placeholder="Buscar un producto" aria-label="Buscar un producto" oninput="pintarCatalogo()">
+  </div>
+  <div class="grilla" id="grillaCatalogo"></div>
+</section>
+
+<!-- ===== CÓMO FUNCIONA ===== -->
+<section class="seccion" id="como-funciona">
+  <h2>Cómo funciona</h2>
+  <p class="sub">Tres pasos para llevar el control del negocio sin planillas ni papeles.</p>
+  <div class="pasos">
+    <div class="paso"><h3>Cargás tus productos</h3><p>Ingresás nombre, costo, precio de venta y stock. El catálogo público se arma solo.</p></div>
+    <div class="paso"><h3>Vendés online y en el mostrador</h3><p>Las compras de la web llegan solas con el pago confirmado y descuentan stock. Las del mostrador las cargás vos y se genera el remito.</p></div>
+    <div class="paso"><h3>Mirás cuánto ganás</h3><p>El resumen del mes muestra ventas, costos, ganancia y rentabilidad, y te avisa qué productos se están agotando.</p></div>
+  </div>
+</section>
+
+<!-- ===== QUÉ INCLUYE ===== -->
+<section class="seccion" id="que-incluye">
+  <h2>Qué incluye el panel del administrador</h2>
+  <p class="sub">Cada sección del panel resuelve una tarea de todos los días.</p>
+  <div class="funciones">
+    <div class="func"><h3>Resumen</h3><p>El estado del mes de un vistazo.</p><ul><li>Ventas, costos y ganancia neta</li><li>Rentabilidad</li><li>Productos con poco stock</li></ul></div>
+    <div class="func"><h3>Inventario</h3><p>Todos tus productos y su stock.</p><ul><li>Crear productos</li><li>Reponer unidades y actualizar el costo</li></ul></div>
+    <div class="func"><h3>Clientes</h3><p>Tus clientes habituales con su precio.</p><ul><li>Producto que compran siempre</li><li>Precio especial por cliente</li></ul></div>
+    <div class="func"><h3>Ventas y remitos</h3><p>Registrá una venta en segundos.</p><ul><li>Descuenta el stock automáticamente</li><li>Remito listo para imprimir o guardar en PDF</li></ul></div>
+  </div>
+</section>
+
+<!-- ===== PANEL DE ADMINISTRACIÓN (oculto hasta iniciar sesión) ===== -->
+<section id="panelAdmin">
+  <div class="panel-caja">
+    <div class="panel-top">
+      <h2>Panel del administrador</h2>
+      <p>Esta sección solo se ve con la sesión iniciada.</p>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab activa" data-tab="tResumen">Resumen</button>
+      <button class="tab" data-tab="tInventario">Inventario</button>
+      <button class="tab" data-tab="tClientes">Clientes</button>
+      <button class="tab" data-tab="tVentas">Ventas</button>
+      <button class="tab" data-tab="tPedidos">Pedidos online</button>
     </div>
 
-    <div class="container">
-        <div style="text-align:center; margin-bottom:30px;">
-            <h2>Bienvenidos a nuestro catálogo</h2>
-            <p style="color:#666;">Todo lo que tus clientes ven de forma limpia y ordenada.</p>
-        </div>
-
-        <!-- PANEL DE ADMINISTRACIÓN (OCULTO HASTA INICIAR SESIÓN) -->
-        <div id="panelAdmin">
-            <h2>Panel de Control y Gestión (Dueño)</h2>
-
-            <!-- Inventario y Reposición -->
-            <h3 style="color:#16423c;">1. Inventario y Reposición</h3>
-            <div class="form-grid">
-                <input type="text" id="pNombre" placeholder="Nombre del Producto">
-                <input type="number" id="pCosto" placeholder="Precio de Costo ($)">
-                <input type="number" id="pPrecioNormal" placeholder="Precio de Venta ($)">
-                <input type="number" id="pStockInicial" placeholder="Stock Inicial">
-            </div>
-            <button class="btn-accion" onclick="guardarProducto()">Crear Producto</button>
-            
-            <div class="form-grid" style="margin-top:15px;">
-                <select id="repoProducto"></select>
-                <input type="number" id="repoCantidad" placeholder="Sumar Unidades">
-                <input type="number" id="repoCostoReal" placeholder="Nuevo Costo ($)">
-            </div>
-            <button class="btn-accion" onclick="reponerStock()">Actualizar Stock</button>
-            <table id="tablaInventario">
-                <thead><tr><th>Producto</th><th>Stock</th><th>Costo</th><th>Precio Venta</th></tr></thead>
-                <tbody></tbody>
-            </table>
-
-            <!-- Clientes -->
-            <h3 style="color:#16423c; margin-top:25px;">2. Clientes y Precios Especiales</h3>
-            <div class="form-grid">
-                <input type="text" id="cNombre" placeholder="Nombre (Ej. Miguel)">
-                <select id="cProductoFavorito"><option value="">Producto Habitual...</option></select>
-                <input type="number" id="cPrecioEspecial" placeholder="Precio Especial ($)">
-            </div>
-            <button class="btn-accion" onclick="guardarCliente()">Guardar Cliente</button>
-            <table id="tablaClientes">
-                <thead><tr><th>Cliente</th><th>Producto Habitual</th><th>Precio Especial</th></tr></thead>
-                <tbody></tbody>
-            </table>
-
-            <!-- Ventas -->
-            <h3 style="color:#16423c; margin-top:25px;">3. Registrar Venta y Generar Remito</h3>
-            <div class="form-grid">
-                <select id="vCliente" onchange="cargarPreferenciaCliente()"></select>
-                <select id="vProducto" onchange="ajustarPrecioVenta()"></select>
-                <input type="number" id="vCantidad" placeholder="Cantidad" value="1" min="1">
-                <input type="number" id="vPrecioUnitario" placeholder="Precio Final ($)">
-            </div>
-            <button class="btn-accion" onclick="procesarVenta()">Vender y Emitir Remito</button>
-            <table id="tablaVentas">
-                <thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Cant</th><th>Total</th></tr></thead>
-                <tbody></tbody>
-            </table>
-
-            <!-- Finanzas -->
-            <h3 style="color:#16423c; margin-top:25px;">4. Cierre y Rentabilidad del Mes</h3>
-            <div class="resumen-box">
-                <div>Ventas: <span id="resVentas">$0</span></div>
-                <div>Costos: <span id="resCompras">$0</span></div>
-                <div>Ganancia Neta: <span id="resGanancia">$0</span></div>
-                <div>Rentabilidad: <span id="resRentabilidad">0%</span></div>
-            </div>
-        </div>
+    <!-- Resumen -->
+    <div class="tab-cuerpo activa" id="tResumen">
+      <h3>Resumen del mes</h3>
+      <p class="ayuda">Se calcula con las ventas registradas en el mes actual.</p>
+      <div class="tarjetas">
+        <div class="tarjeta"><span>Ventas</span><strong id="resVentas">$0</strong></div>
+        <div class="tarjeta"><span>Costos</span><strong id="resCompras">$0</strong></div>
+        <div class="tarjeta"><span>Ganancia neta</span><strong id="resGanancia">$0</strong></div>
+        <div class="tarjeta"><span>Rentabilidad</span><strong id="resRentabilidad">0%</strong></div>
+      </div>
+      <div class="bloque">
+        <h3>Productos con poco stock</h3>
+        <p class="ayuda">Productos con 5 unidades o menos.</p>
+        <div class="tabla-wrap"><table id="tablaBajo"><thead><tr><th>Producto</th><th>Stock</th></tr></thead><tbody></tbody></table></div>
+      </div>
     </div>
 
-    <!-- VENTANA MODAL DE LOGIN -->
-    <div id="loginModal">
-        <div class="login-box">
-            <h3>Iniciar Sesión (Dueño)</h3>
-            <input type="email" id="emailAdmin" placeholder="Correo electrónico">
-            <input type="password" id="passwordAdmin" placeholder="Contraseña">
-            <button class="btn-accion" onclick="iniciarSesionAdmin()" style="width:100%; margin-bottom:10px;">Ingresar</button>
-            <button onclick="cerrarModalLogin()" style="background:#ccc; border:none; padding:8px; width:100%; border-radius:4px; cursor:pointer;">Cancelar</button>
+    <!-- Inventario -->
+    <div class="tab-cuerpo" id="tInventario">
+      <h3>Crear un producto</h3>
+      <p class="ayuda">Aparecerá en el catálogo público con su precio de venta. El costo es privado.</p>
+      <div class="form-grid">
+        <div><label for="pNombre">Nombre</label><input type="text" id="pNombre" placeholder="Ej. Arena sanitaria 4 kg"></div>
+        <div><label for="pCosto">Costo ($)</label><input type="number" id="pCosto" min="0"></div>
+        <div><label for="pPrecioNormal">Precio de venta ($)</label><input type="number" id="pPrecioNormal" min="0"></div>
+        <div><label for="pStockInicial">Stock inicial</label><input type="number" id="pStockInicial" min="0"></div>
+      </div>
+      <button class="btn-accion" onclick="guardarProducto()">Crear producto</button>
+
+      <div class="bloque">
+        <h3>Reponer stock</h3>
+        <p class="ayuda">Sumá las unidades que entraron. Si cambió el costo, actualizalo también.</p>
+        <div class="form-grid">
+          <div><label for="repoProducto">Producto</label><select id="repoProducto"></select></div>
+          <div><label for="repoCantidad">Unidades a sumar</label><input type="number" id="repoCantidad" min="1"></div>
+          <div><label for="repoCostoReal">Nuevo costo ($, opcional)</label><input type="number" id="repoCostoReal" min="0"></div>
         </div>
+        <button class="btn-accion" onclick="reponerStock()">Actualizar stock</button>
+      </div>
+
+      <div class="tabla-wrap"><table id="tablaInventario"><thead><tr><th>Producto</th><th>Stock</th><th>Costo</th><th>Precio de venta</th></tr></thead><tbody></tbody></table></div>
     </div>
 
-    <!-- MODAL DE REMITO -->
-    <div id="remitoModal">
-        <div class="remito-content">
-            <div class="remito-header">
-                <h2>REMITO DE ENTREGA</h2>
-                <p id="remitoFecha">Fecha: --/--/----</p>
-            </div>
-            <p><strong>Cliente:</strong> <span id="remitoCliente">--</span></p>
-            <p><strong>Detalle:</strong> <span id="remitoDetalle">--</span></p>
-            <p><strong>Cantidad:</strong> <span id="remitoCantidad">--</span></p>
-            <h3 style="text-align:right;">Total: <span id="remitoTotal">$0</span></h3>
-            <div style="text-align:center; margin-top:20px;" class="no-print">
-                <button class="btn-accion" onclick="window.print()">Imprimir / Guardar PDF</button>
-                <button onclick="cerrarRemito()" style="padding:10px; background:#ccc; border:none; border-radius:4px; cursor:pointer; margin-left:10px;">Cerrar</button>
-            </div>
-        </div>
+    <!-- Clientes -->
+    <div class="tab-cuerpo" id="tClientes">
+      <h3>Agregar un cliente</h3>
+      <p class="ayuda">Si le asignás un producto habitual y un precio especial, se completan solos al venderle.</p>
+      <div class="form-grid">
+        <div><label for="cNombre">Nombre</label><input type="text" id="cNombre" placeholder="Ej. Miguel"></div>
+        <div><label for="cProductoFavorito">Producto habitual</label><select id="cProductoFavorito"></select></div>
+        <div><label for="cPrecioEspecial">Precio especial ($)</label><input type="number" id="cPrecioEspecial" min="0"></div>
+      </div>
+      <button class="btn-accion" onclick="guardarCliente()">Guardar cliente</button>
+      <div class="tabla-wrap"><table id="tablaClientes"><thead><tr><th>Cliente</th><th>Producto habitual</th><th>Precio especial</th></tr></thead><tbody></tbody></table></div>
     </div>
 
-    <!-- SCRIPT DE SUPABASE Y LÓGICA -->
-    <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    <!-- Pedidos online -->
+    <div class="tab-cuerpo" id="tPedidos">
+      <h3>Pedidos de la web</h3>
+      <p class="ayuda">Llegan con el pago ya confirmado por Mercado Pago. El stock se descuenta solo; vos preparás y marcás la entrega.</p>
+      <div class="tabla-wrap"><table id="tablaPedidos"><thead><tr><th>Fecha</th><th>Cliente</th><th>Detalle</th><th>Total</th><th>Estado</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
 
-        // ⚠️ REEMPLAZA ESTO CON TU URL REAL DE SUPABASE (Ej: https://abcdef.supabase.co)
-        const supabaseUrl = 'https://keimmlszgznrsztdapik.supabase.co';
-        const supabaseKey = 'sb_publishable_oogq08tzxSx9BWgwvvWZVg_hflO9pwK';
-        const supabase = createClient(supabaseUrl, supabaseKey);
+    <!-- Ventas -->
+    <div class="tab-cuerpo" id="tVentas">
+      <h3>Registrar una venta</h3>
+      <p class="ayuda">Al confirmar, se descuenta el stock y se genera el remito.</p>
+      <div class="form-grid">
+        <div><label for="vCliente">Cliente</label><select id="vCliente" onchange="cargarPreferenciaCliente()"></select></div>
+        <div><label for="vProducto">Producto</label><select id="vProducto" onchange="ajustarPrecioVenta()"></select></div>
+        <div><label for="vCantidad">Cantidad</label><input type="number" id="vCantidad" value="1" min="1"></div>
+        <div><label for="vPrecioUnitario">Precio unitario ($)</label><input type="number" id="vPrecioUnitario" min="0"></div>
+      </div>
+      <button class="btn-accion" onclick="procesarVenta()">Vender y emitir remito</button>
+      <div class="tabla-wrap"><table id="tablaVentas"><thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Cant.</th><th>Total</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+</section>
 
-        let sesionActiva = false;
+<footer>Prototipo de sistema para distribuidores. Catálogo público y panel privado del administrador.</footer>
 
-        window.manejarAuth = async function() {
-            if (sesionActiva) {
-                if(confirm("¿Deseas cerrar sesión?")) {
-                    await supabase.auth.signOut();
-                    verificarSesion();
-                }
-            } else {
-                document.getElementById('loginModal').style.display = 'flex';
-            }
-        }
+<!-- ===== LOGIN ===== -->
+<div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitulo">
+  <div class="caja">
+    <h3 id="loginTitulo">Iniciar sesión</h3>
+    <p class="nota" id="loginNota">Ingresá con tu correo y contraseña. Solo el administrador accede al panel.</p>
+    <input type="email" id="emailAdmin" placeholder="Correo electrónico" autocomplete="username">
+    <input type="password" id="passwordAdmin" placeholder="Contraseña" autocomplete="current-password">
+    <p class="error" id="loginError"></p>
+    <div style="display:flex;gap:10px">
+      <button class="btn-accion" style="flex:1" id="btnLoginOk" onclick="enviarAuth()">Ingresar</button>
+      <button class="btn-sec" onclick="cerrarModalLogin()">Cancelar</button>
+    </div>
+    <p style="margin:14px 0 0;text-align:center"><button class="link" id="btnModo" onclick="cambiarModo()">¿No tenés cuenta? Crear cuenta</button></p>
+  </div>
+</div>
 
-        window.cerrarModalLogin = function() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
+<div class="modal" id="carritoModal" role="dialog" aria-modal="true">
+  <div class="caja caja-ancha">
+    <h3>Tu compra</h3>
+    <div id="itemsCarrito"></div>
+    <p style="text-align:right;font-weight:700;font-size:18px">Total: <span id="totalCarrito">$0</span></p>
+    <div id="datosEnvio">
+      <input type="text" id="kNombre" placeholder="Nombre y apellido">
+      <input type="tel" id="kTelefono" placeholder="Teléfono">
+      <input type="text" id="kDireccion" placeholder="Dirección de entrega o Retiro en el local">
+    </div>
+    <p class="error" id="compraError"></p>
+    <div style="display:flex;gap:10px"><button class="btn-accion" style="flex:1" id="btnPagar" onclick="pagar()">Pagar con Mercado Pago</button><button class="btn-sec" onclick="cerrarCarrito()">Cerrar</button></div>
+    <div class="bloque" id="misPedidos" style="display:none"><h3 style="font-size:17px">Mis pedidos</h3><div id="listaMisPedidos"></div></div>
+  </div>
+</div>
 
-        window.iniciarSesionAdmin = async function() {
-            const email = document.getElementById('emailAdmin').value;
-            const password = document.getElementById('passwordAdmin').value;
+<!-- ===== REMITO ===== -->
+<div class="modal" id="remitoModal">
+  <div class="caja remito-caja">
+    <div class="remito-head">
+      <h3>REMITO DE ENTREGA</h3>
+      <p id="remitoFecha">Fecha: --/--/----</p>
+    </div>
+    <p><strong>Cliente:</strong> <span id="remitoCliente">--</span></p>
+    <p><strong>Detalle:</strong> <span id="remitoDetalle">--</span></p>
+    <p><strong>Cantidad:</strong> <span id="remitoCantidad">--</span></p>
+    <h3 style="text-align:right;color:var(--texto)">Total: <span id="remitoTotal">$0</span></h3>
+    <div class="no-print" style="text-align:center;margin-top:20px;display:flex;gap:10px;justify-content:center">
+      <button class="btn-accion" onclick="window.print()">Imprimir / Guardar PDF</button>
+      <button class="btn-sec" onclick="cerrarRemito()">Cerrar</button>
+    </div>
+  </div>
+</div>
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) {
-                alert("Error de acceso: " + error.message);
-            } else {
-                cerrarModalLogin();
-                verificarSesion();
-            }
-        }
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-        async function verificarSesion() {
-            const { data: { session } } = await supabase.auth.getSession();
-            const btnAuth = document.getElementById('btnAuth');
-            const panelAdmin = document.getElementById('panelAdmin');
+// ===== CONFIGURACIÓN (lo único que cambiás para cada distribuidor) =====
+const NOMBRE_NEGOCIO = 'Mi Distribuidora';
+const supabaseUrl = 'https://keimmlszgznrsztdapik.supabase.co';
+const supabaseKey = 'sb_publishable_oogq08tzxSx9BWgwvvWZVg_hflO9pwK';
+const STOCK_BAJO = 5;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-            if (session) {
-                sesionActiva = true;
-                btnAuth.innerText = "🚪 Cerrar Sesión";
-                panelAdmin.style.display = 'block';
-                cargarDatosDesdeSupabase();
-            } else {
-                sesionActiva = false;
-                btnAuth.innerText = "🔑 Iniciar Sesión";
-                panelAdmin.style.display = 'none';
-            }
-        }
+document.getElementById('nombreMarca').textContent = NOMBRE_NEGOCIO;
+document.title = NOMBRE_NEGOCIO;
 
-        // --- CARRUSEL ---
-        const slides = document.querySelectorAll(".carousel-slide");
-        const nextBtn = document.querySelector(".next");
-        const prevBtn = document.querySelector(".prev");
-        let currentIndex = 0;
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                const video = slide.querySelector("video");
-                if (i === index) { slide.classList.add("active"); if(video) { video.currentTime = 0; video.play().catch(e=>{}); } }
-                else { slide.classList.remove("active"); if(video) video.pause(); }
-            });
-        }
-        if(nextBtn) nextBtn.addEventListener("click", () => { currentIndex = (currentIndex + 1) % slides.length; showSlide(currentIndex); });
-        if(prevBtn) prevBtn.addEventListener("click", () => { currentIndex = (currentIndex - 1 + slides.length) % slides.length; showSlide(currentIndex); });
-        showSlide(currentIndex);
+const $ = id => document.getElementById(id);
+const dinero = n => '$' + (Number(n) || 0).toLocaleString('es-AR');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-        let inventario = [];
-        let clientes = [];
-        let ventas = [];
+let sesionActiva = false, esAdmin = false, usuarioId = null, pedidos = [];
+let catalogo = [];
+let inventario = [], clientes = [], ventas = [];
 
-        async function cargarDatosDesdeSupabase() {
-            let resProd = await supabase.from('productos').select('*');
-            inventario = resProd.data || [];
+const EJEMPLOS = [
+  { id:'e1', nombre:'Producto de ejemplo A', precioNormal:4500, stock:24 },
+  { id:'e2', nombre:'Producto de ejemplo B', precioNormal:8900, stock:3 },
+  { id:'e3', nombre:'Producto de ejemplo C', precioNormal:12500, stock:40 },
+  { id:'e4', nombre:'Producto de ejemplo D', precioNormal:2300, stock:0 }
+];
 
-            let resCli = await supabase.from('clientes').select('*');
-            clientes = resCli.data || [];
+/* ---------- CATÁLOGO PÚBLICO (sin iniciar sesión) ---------- */
+async function cargarCatalogo() {
+  // Solo se piden columnas públicas: el costo nunca se descarga acá.
+  const { data, error } = await supabase.from('catalogo_publico').select('id,nombre,precioNormal,unidades_max').order('nombre');
+  if (error || !data || data.length === 0) {
+    catalogo = EJEMPLOS;
+    $('avisoDemo').style.display = 'block';
+  } else {
+    catalogo = data.map(p => ({ ...p, stock: p.unidades_max }));
+    $('avisoDemo').style.display = 'none';
+  }
+  pintarCatalogo();
+}
 
-            let resVen = await supabase.from('ventas').select('*');
-            ventas = resVen.data || [];
+window.pintarCatalogo = function() {
+  const q = $('buscar').value.trim().toLowerCase();
+  const lista = catalogo.filter(p => p.nombre.toLowerCase().includes(q));
+  if (!lista.length) {
+    $('grillaCatalogo').innerHTML = '<div class="vacio" style="grid-column:1/-1">No encontramos productos con ese nombre.</div>';
+    return;
+  }
+  $('grillaCatalogo').innerHTML = lista.map(p => {
+    let est = p.stock <= 0 ? ['nada','Sin stock'] : p.stock <= STOCK_BAJO ? ['poco','Quedan pocas unidades'] : ['ok','Disponible'];
+    return `<article class="prod"><h3>${esc(p.nombre)}</h3><div class="precio">${dinero(p.precioNormal)}</div><span class="estado ${est[0]}">${est[1]}</span><button class="btn-accion" ${est[0] === 'nada' ? 'disabled' : ''} onclick="agregarAlCarrito('${esc(p.id)}')">Agregar al carrito</button></article>`;
+  }).join('');
+}
 
-            actualizarSelects();
-            renderTablas();
-            calcularFinanzasMes();
-        }
+/* ---------- SESIÓN ---------- */
+window.manejarAuth = async function() {
+  if (sesionActiva) {
+    if (confirm('¿Querés cerrar sesión?')) { await supabase.auth.signOut(); verificarSesion(); }
+  } else {
+    $('loginError').style.display = 'none';
+    $('loginModal').style.display = 'flex';
+    $('emailAdmin').focus();
+  }
+}
+window.cerrarModalLogin = () => { $('loginModal').style.display = 'none'; }
 
-        window.guardarProducto = async function() {
-            let nombre = document.getElementById('pNombre').value;
-            let costo = parseFloat(document.getElementById('pCosto').value) || 0;
-            let precioNormal = parseFloat(document.getElementById('pPrecioNormal').value) || 0;
-            let stock = parseInt(document.getElementById('pStockInicial').value) || 0;
-            if(!nombre) return alert('Ingresa el nombre');
+window.iniciarSesionAdmin = async function() {
+  const email = $('emailAdmin').value.trim();
+  const password = $('passwordAdmin').value;
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    $('loginError').textContent = 'No pudimos iniciar sesión. Revisá el correo y la contraseña.';
+    $('loginError').style.display = 'block';
+    return;
+  }
+  $('passwordAdmin').value = '';
+  cerrarModalLogin();
+  await verificarSesion();
+  $('panelAdmin').scrollIntoView({ behavior: 'smooth' });
+}
+['emailAdmin','passwordAdmin'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') enviarAuth(); }));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModalLogin(); });
 
-            let { error } = await supabase.from('productos').insert([{ nombre, costo, precioNormal, stock }]);
-            if(error) return alert("Error: " + error.message);
-            
-            alert('¡Producto guardado!');
-            cargarDatosDesdeSupabase();
-        }
+async function verificarSesion() {
+  const { data: { session } } = await supabase.auth.getSession();
+  sesionActiva = !!session;
+  usuarioId = session ? session.user.id : null;
+  esAdmin = false;
+  if (sesionActiva) { const { data: adm } = await supabase.rpc('es_admin'); esAdmin = adm === true; }
+  $('btnAuth').textContent = sesionActiva ? 'Cerrar sesión' : 'Iniciar sesión';
+  $('btnPanel').style.display = esAdmin ? 'inline-block' : 'none';
+  $('panelAdmin').style.display = esAdmin ? 'block' : 'none';
+  if (esAdmin) cargarDatosAdmin();
+  else { inventario = []; clientes = []; ventas = []; pedidos = []; }
+}
 
-        window.reponerStock = async function() {
-            let id = document.getElementById('repoProducto').value;
-            let cant = parseInt(document.getElementById('repoCantidad').value) || 0;
-            let costoNuevo = parseFloat(document.getElementById('repoCostoReal').value);
-            let prod = inventario.find(p => p.id == id);
-            if(!prod || cant <= 0) return alert('Selecciona producto y cantidad');
+/* ---------- PESTAÑAS DEL PANEL ---------- */
+document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('activa'));
+  document.querySelectorAll('.tab-cuerpo').forEach(c => c.classList.remove('activa'));
+  btn.classList.add('activa');
+  $(btn.dataset.tab).classList.add('activa');
+}));
 
-            let nuevoStock = prod.stock + cant;
-            let datosUpdate = { stock: nuevoStock };
-            if(!isNaN(costoNuevo)) datosUpdate.costo = costoNuevo;
+/* ---------- DATOS DEL ADMINISTRADOR ---------- */
+async function cargarDatosAdmin() {
+  const [rp, rc, rv] = await Promise.all([
+    supabase.from('productos').select('*').order('nombre'),
+    supabase.from('clientes').select('*').order('nombre'),
+    supabase.from('ventas').select('*').order('id', { ascending: false })
+  ]);
+  inventario = rp.data || [];
+  clientes = rc.data || [];
+  ventas = rv.data || [];
+  const rpd = await supabase.from('pedidos').select('*, pedido_items(nombre,cantidad)').order('creado', { ascending: false });
+  pedidos = rpd.data || [];
+  actualizarSelects();
+  renderTablas();
+  renderPedidos();
+  calcularFinanzasMes();
+  cargarCatalogo(); // el catálogo público se refresca con los cambios
+}
 
-            let { error } = await supabase.from('productos').update(datosUpdate).eq('id', id);
-            if(error) return alert("Error: " + error.message);
+window.guardarProducto = async function() {
+  const nombre = $('pNombre').value.trim();
+  const costo = parseFloat($('pCosto').value) || 0;
+  const precioNormal = parseFloat($('pPrecioNormal').value) || 0;
+  const stock = parseInt($('pStockInicial').value) || 0;
+  if (!nombre) return alert('Ingresá el nombre del producto.');
+  const { error } = await supabase.from('productos').insert([{ nombre, costo, precioNormal, stock }]);
+  if (error) return alert('No se pudo guardar: ' + error.message);
+  ['pNombre','pCosto','pPrecioNormal','pStockInicial'].forEach(id => $(id).value = '');
+  cargarDatosAdmin();
+}
 
-            alert('¡Stock actualizado!');
-            cargarDatosDesdeSupabase();
-        }
+window.reponerStock = async function() {
+  const id = $('repoProducto').value;
+  const cant = parseInt($('repoCantidad').value) || 0;
+  const costoNuevo = parseFloat($('repoCostoReal').value);
+  const prod = inventario.find(p => p.id == id);
+  if (!prod || cant <= 0) return alert('Elegí un producto e ingresá la cantidad.');
+  const datos = { stock: prod.stock + cant };
+  if (!isNaN(costoNuevo)) datos.costo = costoNuevo;
+  const { error } = await supabase.from('productos').update(datos).eq('id', id);
+  if (error) return alert('No se pudo actualizar: ' + error.message);
+  ['repoCantidad','repoCostoReal'].forEach(i => $(i).value = '');
+  cargarDatosAdmin();
+}
 
-        window.guardarCliente = async function() {
-            let nombre = document.getElementById('cNombre').value;
-            let productoId = document.getElementById('cProductoFavorito').value || null;
-            let precioEspecial = parseFloat(document.getElementById('cPrecioEspecial').value) || 0;
-            if(!nombre) return alert('Ingresa el nombre');
+window.guardarCliente = async function() {
+  const nombre = $('cNombre').value.trim();
+  const productoId = $('cProductoFavorito').value || null;
+  const precioEspecial = parseFloat($('cPrecioEspecial').value) || 0;
+  if (!nombre) return alert('Ingresá el nombre del cliente.');
+  const { error } = await supabase.from('clientes').insert([{ nombre, productoId, precioEspecial }]);
+  if (error) return alert('No se pudo guardar: ' + error.message);
+  ['cNombre','cPrecioEspecial'].forEach(id => $(id).value = '');
+  cargarDatosAdmin();
+}
 
-            let { error } = await supabase.from('clientes').insert([{ nombre, productoId, precioEspecial }]);
-            if(error) return alert("Error: " + error.message);
+function actualizarSelects() {
+  const opts = inventario.map(p => `<option value="${esc(p.id)}">${esc(p.nombre)} (stock: ${p.stock})</option>`).join('');
+  $('repoProducto').innerHTML = '<option value="">Elegí un producto</option>' + opts;
+  $('cProductoFavorito').innerHTML = '<option value="">Sin producto habitual</option>' + opts;
+  $('vProducto').innerHTML = '<option value="">Elegí un producto</option>' +
+    inventario.map(p => `<option value="${esc(p.id)}" data-precio="${p.precioNormal}">${esc(p.nombre)} (${dinero(p.precioNormal)})</option>`).join('');
+  $('vCliente').innerHTML = '<option value="">Elegí un cliente</option>' +
+    clientes.map(c => `<option value="${esc(c.id)}" data-fav="${esc(c.productoId)}" data-especial="${c.precioEspecial || 0}">${esc(c.nombre)}</option>`).join('');
+}
 
-            alert('¡Cliente guardado!');
-            cargarDatosDesdeSupabase();
-        }
+window.cargarPreferenciaCliente = function() {
+  const sel = $('vCliente');
+  const opt = sel.options[sel.selectedIndex];
+  const fav = opt.getAttribute('data-fav');
+  const esp = parseFloat(opt.getAttribute('data-especial')) || 0;
+  if (fav && fav !== 'null' && fav !== '') {
+    $('vProducto').value = fav;
+    if (esp > 0) $('vPrecioUnitario').value = esp;
+    else ajustarPrecioVenta();
+  }
+}
 
-        function actualizarSelects() {
-            let sRepo = document.getElementById('repoProducto');
-            let sCliFav = document.getElementById('cProductoFavorito');
-            let sVClie = document.getElementById('vCliente');
-            let sVProd = document.getElementById('vProducto');
+window.ajustarPrecioVenta = function() {
+  const sp = $('vProducto');
+  const normal = sp.options[sp.selectedIndex].getAttribute('data-precio') || 0;
+  const oc = $('vCliente').options[$('vCliente').selectedIndex];
+  const fav = oc.getAttribute('data-fav');
+  const esp = parseFloat(oc.getAttribute('data-especial')) || 0;
+  $('vPrecioUnitario').value = (fav == sp.value && esp > 0) ? esp : normal;
+}
 
-            sRepo.innerHTML = '<option value="">Seleccionar producto...</option>';
-            sCliFav.innerHTML = '<option value="">Producto Habitual...</option>';
-            sVClie.innerHTML = '<option value="">Seleccione Cliente...</option>';
-            sVProd.innerHTML = '<option value="">Seleccione Producto...</option>';
+window.procesarVenta = async function() {
+  const clienteId = $('vCliente').value;
+  const productoId = $('vProducto').value;
+  const cantidad = parseInt($('vCantidad').value) || 0;
+  const precioU = parseFloat($('vPrecioUnitario').value) || 0;
+  if (!clienteId || !productoId || cantidad <= 0) return alert('Completá cliente, producto y cantidad.');
+  const prod = inventario.find(p => p.id == productoId);
+  const cli = clientes.find(c => c.id == clienteId);
+  if (prod.stock < cantidad) return alert('No hay stock suficiente.');
 
-            inventario.forEach(p => {
-                let opt = `<option value="${p.id}">${p.nombre} (Stock: ${p.stock})</option>`;
-                sRepo.innerHTML += opt;
-                sCliFav.innerHTML += opt;
-                sVProd.innerHTML += `<option value="${p.id}" data-precio="${p.precioNormal}" data-costo="${p.costo}">${p.nombre} ($${p.precioNormal})</option>`;
-            });
+  const totalVenta = cantidad * precioU;
+  const totalCosto = cantidad * (prod.costo || 0);
+  const hoy = new Date().toISOString().slice(0, 10);
 
-            clientes.forEach(c => {
-                sVClie.innerHTML += `<option value="${c.id}" data-fav="${c.productoId}" data-especial="${c.precioEspecial}">${c.nombre}</option>`;
-            });
-        }
+  const { error } = await supabase.from('ventas').insert([{
+    fecha: hoy, cliente: cli ? cli.nombre : 'General', producto: prod.nombre, cantidad, totalVenta, totalCosto
+  }]);
+  if (error) return alert('No se pudo registrar la venta: ' + error.message);
 
-        window.cargarPreferenciaCliente = function() {
-            let opt = document.getElementById('vCliente').options[document.getElementById('vCliente').selectedIndex];
-            let prodFav = opt.getAttribute('data-fav');
-            let precioEsp = opt.getAttribute('data-especial');
-            if(prodFav && prodFav !== "null") {
-                document.getElementById('vProducto').value = prodFav;
-                if(precioEsp && precioEsp > 0) document.getElementById('vPrecioUnitario').value = precioEsp;
-            }
-        }
+  const { error: e2 } = await supabase.from('productos').update({ stock: prod.stock - cantidad }).eq('id', productoId);
+  if (e2) alert('La venta se registró, pero no se pudo descontar el stock: ' + e2.message);
 
-        window.ajustarPrecioVenta = function() {
-            let sVProd = document.getElementById('vProducto');
-            let precioNorm = sVProd.options[sVProd.selectedIndex].getAttribute('data-precio') || 0;
-            let optCli = document.getElementById('vCliente').options[document.getElementById('vCliente').selectedIndex];
-            let prodFav = optCli.getAttribute('data-fav');
-            let precioEsp = parseFloat(optCli.getAttribute('data-especial')) || 0;
+  $('remitoFecha').textContent = 'Fecha: ' + formatoFecha(hoy);
+  $('remitoCliente').textContent = cli ? cli.nombre : 'General';
+  $('remitoDetalle').textContent = prod.nombre;
+  $('remitoCantidad').textContent = cantidad;
+  $('remitoTotal').textContent = dinero(totalVenta);
+  $('remitoModal').style.display = 'flex';
+  cargarDatosAdmin();
+}
+window.cerrarRemito = () => { $('remitoModal').style.display = 'none'; }
 
-            if(prodFav == sVProd.value && precioEsp > 0) {
-                document.getElementById('vPrecioUnitario').value = precioEsp;
-            } else {
-                document.getElementById('vPrecioUnitario').value = precioNorm;
-            }
-        }
+function formatoFecha(f) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(f || '');
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : (f || '');
+}
 
-        window.procesarVenta = async function() {
-            let clienteId = document.getElementById('vCliente').value;
-            let productoId = document.getElementById('vProducto').value;
-            let cantidad = parseInt(document.getElementById('vCantidad').value) || 0;
-            let precioU = parseFloat(document.getElementById('vPrecioUnitario').value) || 0;
+function renderTablas() {
+  $('tablaInventario').querySelector('tbody').innerHTML = inventario.map(p =>
+    `<tr><td>${esc(p.nombre)}</td><td><b>${p.stock}</b></td><td>${dinero(p.costo)}</td><td>${dinero(p.precioNormal)}</td></tr>`).join('')
+    || '<tr><td colspan="4">Todavía no cargaste productos.</td></tr>';
 
-            if(!clienteId || !productoId || cantidad <= 0) return alert('Completa los datos');
-            let prod = inventario.find(p => p.id == productoId);
-            let cli = clientes.find(c => c.id == clienteId);
+  $('tablaClientes').querySelector('tbody').innerHTML = clientes.map(c => {
+    const p = inventario.find(x => x.id == c.productoId);
+    return `<tr><td>${esc(c.nombre)}</td><td>${p ? esc(p.nombre) : '-'}</td><td>${c.precioEspecial ? dinero(c.precioEspecial) : '-'}</td></tr>`;
+  }).join('') || '<tr><td colspan="3">Todavía no cargaste clientes.</td></tr>';
 
-            if(prod.stock < cantidad) return alert('¡Stock insuficiente!');
+  $('tablaVentas').querySelector('tbody').innerHTML = ventas.map(v =>
+    `<tr><td>${formatoFecha(v.fecha)}</td><td>${esc(v.cliente)}</td><td>${esc(v.producto)}</td><td>${v.cantidad}</td><td>${dinero(v.totalVenta)}</td></tr>`).join('')
+    || '<tr><td colspan="5">Todavía no registraste ventas.</td></tr>';
 
-            let nuevoStock = prod.stock - cantidad;
-            await supabase.from('productos').update({ stock: nuevoStock }).eq('id', productoId);
+  const bajos = inventario.filter(p => p.stock <= STOCK_BAJO);
+  $('tablaBajo').querySelector('tbody').innerHTML = bajos.map(p =>
+    `<tr><td>${esc(p.nombre)}</td><td class="baja">${p.stock}</td></tr>`).join('')
+    || '<tr><td colspan="2">Todo en orden: no hay productos con poco stock.</td></tr>';
+}
 
-            let totalVenta = cantidad * precioU;
-            let totalCosto = cantidad * prod.costo;
-            let fechaActual = new Date().toLocaleDateString();
+function calcularFinanzasMes() {
+  const mes = new Date().toISOString().slice(0, 7); // AAAA-MM
+  const delMes = ventas.filter(v => (v.fecha || '').startsWith(mes));
+  const totalVentas = delMes.reduce((a, v) => a + (v.totalVenta || 0), 0);
+  const totalCostos = delMes.reduce((a, v) => a + (v.totalCosto || 0), 0);
+  const ganancia = totalVentas - totalCostos;
+  const rent = totalCostos > 0 ? (ganancia / totalCostos) * 100 : 0;
+  $('resVentas').textContent = dinero(totalVentas);
+  $('resCompras').textContent = dinero(totalCostos);
+  $('resGanancia').textContent = dinero(ganancia);
+  $('resRentabilidad').textContent = rent.toFixed(1) + '%';
+}
 
-            let { error } = await supabase.from('ventas').insert([{
-                fecha: fechaActual,
-                cliente: cli ? cli.nombre : 'General',
-                producto: prod.nombre,
-                cantidad,
-                totalVenta,
-                totalCosto
-            }]);
+/* ---------- CUENTA DE CLIENTE ---------- */
+let modoRegistro = false;
+function msgLogin(t, ok) { const e = $('loginError'); e.textContent = t; e.style.color = ok ? '#1b7a4b' : ''; e.style.display = 'block'; }
+window.cambiarModo = function() {
+  modoRegistro = !modoRegistro;
+  $('loginTitulo').textContent = modoRegistro ? 'Crear cuenta' : 'Iniciar sesión';
+  $('loginNota').textContent = modoRegistro ? 'Usá tu correo para comprar y seguir tus pedidos. Te enviamos un mensaje para confirmarlo.' : 'Ingresá con tu correo y contraseña. Solo el administrador accede al panel.';
+  $('btnLoginOk').textContent = modoRegistro ? 'Crear cuenta' : 'Ingresar';
+  $('btnModo').textContent = modoRegistro ? '¿Ya tenés cuenta? Iniciar sesión' : '¿No tenés cuenta? Crear cuenta';
+  $('loginError').style.display = 'none';
+}
+window.enviarAuth = async function() {
+  if (!modoRegistro) return iniciarSesionAdmin();
+  const email = $('emailAdmin').value.trim(), password = $('passwordAdmin').value;
+  if (!email || password.length < 8) return msgLogin('Ingresá tu correo y una contraseña de al menos 8 caracteres.');
+  const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname } });
+  if (error) return msgLogin(error.message);
+  $('passwordAdmin').value = '';
+  msgLogin('Listo. Te enviamos un correo: confirmalo y después iniciá sesión.', true);
+}
 
-            if(error) return alert("Error al registrar venta: " + error.message);
+/* ---------- CARRITO Y COMPRA ---------- */
+const ESTADOS = { pendiente_pago:'Esperando pago', pagado:'Pagado', entregado:'Entregado', cancelado:'Cancelado', pagado_sin_stock:'Pagado, te contactaremos', monto_incorrecto:'En revisión' };
+const ESTADOS_ADM = { ...ESTADOS, pagado_sin_stock:'Pagado sin stock: reponé o devolvé', monto_incorrecto:'Revisá el pago en Mercado Pago' };
+let carrito = [];
+try { carrito = JSON.parse(localStorage.getItem('carrito') || '[]'); } catch (e) {}
+function guardarCarrito() {
+  try { localStorage.setItem('carrito', JSON.stringify(carrito)); } catch (e) {}
+  $('cantCarrito').textContent = carrito.reduce((a, i) => a + i.cantidad, 0);
+}
+const buscarProd = id => catalogo.find(x => String(x.id) === String(id));
+window.agregarAlCarrito = function(id) {
+  const p = buscarProd(id);
+  if (!p || catalogo === EJEMPLOS) return alert('Estos son productos de ejemplo: todavía no se pueden comprar.');
+  const it = carrito.find(i => String(i.id) === String(id));
+  if (it) it.cantidad = Math.min(it.cantidad + 1, p.stock); else carrito.push({ id: p.id, cantidad: 1 });
+  abrirCarrito();
+}
+window.cambiarCantidad = function(id, v) {
+  const p = buscarProd(id);
+  const n = Math.max(0, Math.min(parseInt(v) || 0, p ? p.stock : 0));
+  carrito = carrito.filter(i => String(i.id) !== String(id) || n > 0);
+  const it = carrito.find(i => String(i.id) === String(id));
+  if (it) it.cantidad = n;
+  abrirCarrito();
+}
+window.abrirCarrito = async function() {
+  if (catalogo !== EJEMPLOS) carrito = carrito.filter(i => buscarProd(i.id));
+  let total = 0;
+  $('itemsCarrito').innerHTML = carrito.map(i => {
+    const p = buscarProd(i.id); total += p.precioNormal * i.cantidad;
+    return `<div class="item-carrito"><span>${esc(p.nombre)}</span><input type="number" min="0" max="${p.stock}" value="${i.cantidad}" onchange="cambiarCantidad('${esc(p.id)}', this.value)" aria-label="Cantidad"><b>${dinero(p.precioNormal * i.cantidad)}</b></div>`;
+  }).join('') || '<div class="vacio">Tu carrito está vacío. Elegí productos del catálogo.</div>';
+  $('totalCarrito').textContent = dinero(total);
+  const hay = carrito.length > 0;
+  $('datosEnvio').style.display = hay ? 'block' : 'none';
+  $('btnPagar').style.display = hay ? 'block' : 'none';
+  $('btnPagar').disabled = false;
+  $('btnPagar').textContent = sesionActiva ? 'Pagar con Mercado Pago' : 'Iniciar sesión para pagar';
+  $('compraError').style.display = 'none';
+  $('carritoModal').style.display = 'flex';
+  guardarCarrito();
+  await cargarMisPedidos();
+}
+window.cerrarCarrito = () => { $('carritoModal').style.display = 'none'; }
+async function cargarMisPedidos() {
+  if (!sesionActiva || esAdmin) { $('misPedidos').style.display = 'none'; return; }
+  const { data } = await supabase.from('pedidos').select('estado,total,creado').eq('user_id', usuarioId).order('creado', { ascending: false }).limit(10);
+  $('misPedidos').style.display = data && data.length ? 'block' : 'none';
+  $('listaMisPedidos').innerHTML = (data || []).map(p => `<div class="item-carrito"><span>${new Date(p.creado).toLocaleDateString('es-AR')}</span><span>${ESTADOS[p.estado] || p.estado}</span><b>${dinero(p.total)}</b></div>`).join('');
+}
+window.pagar = async function() {
+  if (!sesionActiva) { cerrarCarrito(); return manejarAuth(); }
+  const nombre = $('kNombre').value.trim(), tel = $('kTelefono').value.trim(), dir = $('kDireccion').value.trim();
+  const err = t => { $('compraError').textContent = t; $('compraError').style.display = 'block'; $('btnPagar').disabled = false; };
+  if (!nombre || !tel || !dir) return err('Completá nombre, teléfono y dirección (o "Retiro en el local").');
+  $('btnPagar').disabled = true;
+  const { data, error } = await supabase.rpc('crear_pedido', { items: carrito, p_nombre: nombre, p_telefono: tel, p_direccion: dir });
+  if (error) return err(error.message);
+  const r = await supabase.functions.invoke('crear-pago', { body: { pedido_id: data.id } });
+  if (r.error || !r.data || !r.data.init_point) return err('No pudimos iniciar el pago. Probá de nuevo en unos minutos.');
+  carrito = []; guardarCarrito();
+  location.href = r.data.init_point;
+}
+function mostrarRetornoPago() {
+  const q = new URLSearchParams(location.search).get('pago');
+  const m = { ok:['#e2f0ed','¡Gracias por tu compra! Cuando Mercado Pago confirme el pago, tu pedido figura como Pagado.'], pendiente:['#fff6dc','Tu pago está pendiente. Se confirma cuando se acredite.'], error:['#fde8e6','El pago no se completó. Podés volver a intentarlo desde el carrito.'] }[q];
+  if (!m) return;
+  const b = $('bannerPago'); b.style.background = m[0]; b.textContent = m[1]; b.style.display = 'block';
+  history.replaceState(null, '', location.pathname);
+}
+guardarCarrito();
 
-            document.getElementById('remitoFecha').innerText = `Fecha: ${fechaActual}`;
-            document.getElementById('remitoCliente').innerText = cli ? cli.nombre : 'General';
-            document.getElementById('remitoDetalle').innerText = prod.nombre;
-            document.getElementById('remitoCantidad').innerText = cantidad;
-            document.getElementById('remitoTotal').innerText = `$${totalVenta}`;
-            document.getElementById('remitoModal').style.display = 'flex';
+/* ---------- PEDIDOS (ADMIN) ---------- */
+function renderPedidos() {
+  $('tablaPedidos').querySelector('tbody').innerHTML = pedidos.map(p => `<tr><td>${new Date(p.creado).toLocaleDateString('es-AR')}</td><td>${esc(p.nombre)}<br><small>${esc(p.email)}<br>${esc(p.telefono)}</small></td><td>${(p.pedido_items || []).map(i => i.cantidad + ' x ' + esc(i.nombre)).join('<br>')}<br><small>${esc(p.direccion)}</small></td><td>${dinero(p.total)}</td><td class="${p.estado === 'pagado_sin_stock' || p.estado === 'monto_incorrecto' ? 'baja' : ''}">${ESTADOS_ADM[p.estado] || p.estado}</td><td>${p.estado === 'pagado' ? `<button class="btn-accion" onclick="marcarEntregado('${p.id}')">Marcar entregado</button>` : ''}</td></tr>`).join('')
+    || '<tr><td colspan="6">Todavía no hay pedidos online.</td></tr>';
+}
+window.marcarEntregado = async function(id) {
+  const { error } = await supabase.from('pedidos').update({ estado: 'entregado' }).eq('id', id);
+  if (error) return alert('No se pudo actualizar: ' + error.message);
+  cargarDatosAdmin();
+}
+// Crea el link de pago de Mercado Pago para un pedido del cliente logueado.
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-            cargarDatosDesdeSupabase();
-        }
+const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' }
+const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { ...cors, 'Content-Type': 'application/json' } })
 
-        window.cerrarRemito = function() { document.getElementById('remitoModal').style.display = 'none'; }
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: cors })
+  try {
+    // Con el token del cliente: la RLS garantiza que solo lea SUS pedidos
+    const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } } })
+    const { pedido_id } = await req.json()
+    const { data: ped } = await sb.from('pedidos').select('*, pedido_items(*)').eq('id', pedido_id).single()
+    if (!ped || ped.estado !== 'pendiente_pago') throw new Error('Pedido inválido')
 
-        function renderTablas() {
-            document.querySelector('#tablaInventario tbody').innerHTML = inventario.map(p => `<tr><td>${p.nombre}</td><td><b>${p.stock}</b></td><td>$${p.costo}</td><td>$${p.precioNormal}</td></tr>`).join('');
-            document.querySelector('#tablaClientes tbody').innerHTML = clientes.map(c => {
-                let p = inventario.find(x => x.id == c.productoId);
-                return `<tr><td>${c.nombre}</td><td>${p ? p.nombre : '-'}</td><td>$${c.precioEspecial || 0}</td></tr>`;
-            }).join('');
-            document.querySelector('#tablaVentas tbody').innerHTML = ventas.map(v => `<tr><td>${v.fecha}</td><td>${v.cliente}</td><td>${v.producto}</td><td>${v.cantidad}</td><td>$${v.totalVenta}</td></tr>`).join('');
-        }
+    const site = Deno.env.get('SITE_URL')!   // ej: https://tuusuario.github.io/tu-repo
+    const r = await fetch('https://api.mercadopago.com/checkout/preferences', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${Deno.env.get('MP_ACCESS_TOKEN')}` },
+      body: JSON.stringify({
+        items: ped.pedido_items.map((i: any) => ({ title: i.nombre, quantity: i.cantidad, unit_price: Number(i.precio_unitario), currency_id: 'ARS' })),
+        payer: { email: ped.email },
+        external_reference: ped.id,
+        back_urls: { success: `${site}/?pago=ok`, pending: `${site}/?pago=pendiente`, failure: `${site}/?pago=error` },
+        auto_return: 'approved',
+        notification_url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/mp-webhook`,
+      }),
+    })
+      // Mercado Pago avisa acá cuando hay un pago. Se publica con --no-verify-jwt.
+// No confiamos en el aviso: consultamos el pago directo a Mercado Pago con nuestro token.
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-        function calcularFinanzasMes() {
-            let totalVentas = ventas.reduce((acc, v) => acc + v.totalVenta, 0);
-            let totalInversion = ventas.reduce((acc, v) => acc + v.totalCosto, 0);
-            let gananciaNeta = totalVentas - totalInversion;
-            let rentabilidad = totalInversion > 0 ? (gananciaNeta / totalInversion) * 100 : 0;
+Deno.serve(async (req) => {
+  const url = new URL(req.url)
+  let body: any = {}
+  try { body = await req.json() } catch (_) {}
+  const tipo = body.type ?? url.searchParams.get('type') ?? url.searchParams.get('topic')
+  const id = body.data?.id ?? url.searchParams.get('data.id') ?? url.searchParams.get('id')
+  if (tipo !== 'payment' || !id) return new Response('ignorado')
 
-            document.getElementById('resVentas').innerText = `$${totalVentas}`;
-            document.getElementById('resCompras').innerText = `$${totalInversion}`;
-            document.getElementById('resGanancia').innerText = `$${gananciaNeta}`;
-            document.getElementById('resRentabilidad').innerText = `${rentabilidad.toFixed(2)}%`;
-        }
+  const r = await fetch(`https://api.mercadopago.com/v1/payments/${id}`, {
+    headers: { Authorization: `Bearer ${Deno.env.get('MP_ACCESS_TOKEN')}` },
+  })
+  if (!r.ok) return new Response('error', { status: 500 })   // MP reintenta
+  const pago = await r.json()
 
-        verificarSesion();
-    </script>
+  if (pago.status === 'approved' && pago.external_reference) {
+    const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
+    const { error } = await admin.rpc('confirmar_pago', {
+      p_pedido: pago.external_reference, p_payment: String(pago.id), p_monto: pago.transaction_amount,
+    })
+    if (error) return new Response('error', { status: 500 })
+  }
+  return new Response('ok')
+})
+    const pref = await r.json()
+    if (!r.ok) throw new Error(JSON.stringify(pref))
+    return json({ init_point: pref.init_point })
+  } catch (e) {
+    return json({ error: String((e as Error).message ?? e) }, 400)
+  }
+})
+/* ---------- INICIO ---------- */
+supabase.auth.onAuthStateChange(() => { verificarSesion(); });
+mostrarRetornoPago();
+cargarCatalogo();
+verificarSesion();
+</script>
 </body>
 </html>
