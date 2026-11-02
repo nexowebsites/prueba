@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#16423c">
 <title>Sistema para distribuidores</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -140,6 +141,37 @@ th{background:#eef4f3;color:var(--verde)}
 
 footer{margin-top:64px;background:var(--verde-osc);color:#a9c4bf;text-align:center;padding:26px 20px;font-size:14px}
 
+/* ===== DISEÑO 3D Y MOVIMIENTO ===== */
+#escena3d{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+#progreso{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--ambar),#fff);z-index:200}
+header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.hero{background:linear-gradient(135deg,rgba(15,44,40,.92),rgba(22,66,60,.7));padding:88px 20px 100px}
+.hero h1{font-size:clamp(36px,6.2vw,68px);letter-spacing:-.02em}
+.hero h1 span{color:var(--ambar)}
+.vista{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:transform .3s}
+.vista:hover{transform:translateY(-4px)}
+.btn,.btn-login,.btn-accion{transition:transform .2s,box-shadow .2s,background .2s}
+.btn:hover,.btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.22)}
+.seccion{padding-top:92px}
+.seccion h2::after{content:"";display:block;width:56px;height:5px;border-radius:3px;background:var(--ambar);margin-top:12px}
+.prod,.paso,.func{border-radius:16px;border:1px solid rgba(22,66,60,.08);box-shadow:0 6px 24px rgba(22,66,60,.08);transition:transform .3s,box-shadow .3s}
+.func{background:rgba(255,255,255,.93)}
+.prod:hover,.func:hover,.paso:hover{transform:translateY(-6px);box-shadow:0 16px 36px rgba(22,66,60,.16)}
+.panel-caja{box-shadow:0 18px 50px rgba(22,66,60,.18)}
+.rev{opacity:0;transform:translateY(36px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.rev.vis{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rev{opacity:1;transform:none;transition:none}}
+@media(max-width:760px){
+  .barra{padding:10px 14px;gap:8px}.marca{font-size:17px}
+  .btn-login,.btn-cart,.btn-panel{padding:7px 10px;font-size:13px}
+  .hero{padding:56px 18px 68px}.seccion{padding:60px 16px 4px}
+  .grilla{grid-template-columns:repeat(2,1fr);gap:12px}
+  .prod{padding:14px}.prod h3{font-size:15px}.precio{font-size:21px}
+  .form-grid{grid-template-columns:1fr}
+  .tabs{flex-wrap:nowrap;overflow-x:auto}.tab{white-space:nowrap}
+  .caja{max-height:92vh;overflow:auto;padding:22px}
+  .tab-cuerpo{padding:16px}
+}
 @media print{
   body *{visibility:hidden}
   #remitoModal,#remitoModal *{visibility:visible}
@@ -149,6 +181,8 @@ footer{margin-top:64px;background:var(--verde-osc);color:#a9c4bf;text-align:cent
 </style>
 </head>
 <body>
+<canvas id="escena3d" aria-hidden="true"></canvas>
+<div id="progreso"></div>
 
 <!-- ===== BARRA SUPERIOR: el acceso del administrador va arriba a la derecha ===== -->
 <header>
@@ -178,7 +212,7 @@ footer{margin-top:64px;background:var(--verde-osc);color:#a9c4bf;text-align:cent
 <section class="hero" id="inicio">
   <div class="hero-in">
     <div>
-      <h1>Tu stock, tus clientes y tus ventas en un solo lugar</h1>
+      <h1>Tu stock, tus clientes y tus ventas en <span>un solo lugar</span></h1>
       <p>Tus clientes ven el catálogo, crean su cuenta con su correo y pagan con Mercado Pago. Vos administrás stock, ventas y pedidos desde un panel privado.</p>
       <div class="hero-btns">
         <a class="btn btn-claro" href="#catalogo">Ver productos</a>
@@ -950,6 +984,79 @@ window.demoReiniciar = function() {
   location.reload();
 }
 if (MODO_DEMO) { $('demoBar').style.display = 'flex'; $('demoHint').style.display = 'block'; }
+
+/* ---------- MOVIMIENTO: aparición suave al deslizar + barra de progreso ---------- */
+const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const io = ('IntersectionObserver' in window && !reducido) ? new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  io.unobserve(e.target); e.target.classList.add('vis');
+  setTimeout(() => { e.target.classList.remove('rev', 'vis'); e.target.style.removeProperty('--d'); }, 1200);
+}), { threshold: .12, rootMargin: '0px 0px -6% 0px' }) : null;
+function revelar(raiz) {
+  if (!io) return;
+  raiz.querySelectorAll('.seccion h2,.seccion .sub,.paso,.func,.prod,.vista,.hero h1,.hero p,.hero-btns,.panel-caja').forEach((el, i) => {
+    el.style.setProperty('--d', (i % 6) * 0.08 + 's'); el.classList.add('rev'); io.observe(el);
+  });
+}
+revelar(document);
+// los productos se dibujan después de cargar: se animan solo la primera vez
+const moCat = new MutationObserver(() => { if ($('grillaCatalogo').children.length) { revelar($('grillaCatalogo')); moCat.disconnect(); } });
+moCat.observe($('grillaCatalogo'), { childList: true });
+const barraProgreso = $('progreso');
+function progreso() { const h = document.documentElement.scrollHeight - innerHeight; barraProgreso.style.width = (h > 0 ? scrollY / h * 100 : 0) + '%'; }
+addEventListener('scroll', progreso, { passive: true }); progreso();
+
+/* ---------- FONDO 3D (three.js): cajas flotantes que giran y se mueven al deslizar ---------- */
+function cargarScript(src) { return new Promise((ok, ko) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = ko; document.head.appendChild(s); }); }
+async function iniciar3D() {
+  const cv = $('escena3d');
+  try {
+    await cargarScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js');
+    const movil = innerWidth < 760;
+    const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: !movil, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, movil ? 1.5 : 2));
+    const scene = new THREE.Scene();
+    const cam = new THREE.PerspectiveCamera(50, 1, .1, 100); cam.position.z = 14;
+    scene.add(new THREE.AmbientLight(0xffffff, .75));
+    const luz = new THREE.DirectionalLight(0xffffff, .9); luz.position.set(4, 8, 10); scene.add(luz);
+    const colores = [0x2d6a5f, 0x16423c, 0x8fc4b9, 0xf0b429, 0xcfe6e1, 0x3f8f80];
+    const n = movil ? 10 : 18, cajas = [];
+    for (let i = 0; i < n; i++) {
+      const t = .8 + Math.random() * 1.4;
+      const g = new THREE.BoxGeometry(t, t * (.7 + Math.random() * .6), t);
+      const c = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ color: colores[i % colores.length], transparent: true, opacity: .55 }));
+      c.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .35 })));
+      c.userData = { nx: Math.random() * 2 - 1, y: 4 - (i / n) * 40 + Math.random() * 2, rx: .1 + Math.random() * .25, ry: .1 + Math.random() * .3, v: .5 + Math.random(), f: Math.random() * 6 };
+      c.position.z = -5 + Math.random() * 7;
+      scene.add(c); cajas.push(c);
+    }
+    function ajustar() {
+      renderer.setSize(innerWidth, innerHeight, false);
+      cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix();
+      const mitad = Math.tan(25 * Math.PI / 180) * 14 * cam.aspect;
+      cajas.forEach(c => { c.position.x = c.userData.nx * (mitad + 1); });
+    }
+    ajustar(); addEventListener('resize', ajustar);
+    let suave = 0, px = 0;
+    addEventListener('pointermove', e => { px = e.clientX / innerWidth - .5; }, { passive: true });
+    function cuadro(ms) {
+      const t = ms / 1000, h = document.documentElement.scrollHeight - innerHeight, obj = h > 0 ? scrollY / h : 0;
+      suave = reducido ? obj : suave + (obj - suave) * .08;
+      cam.position.y = -suave * 34;
+      cam.position.x += (px * 1.6 - cam.position.x) * .05;
+      cajas.forEach(c => {
+        const u = c.userData;
+        c.rotation.x = u.rx * t + suave * 4; c.rotation.y = u.ry * t + suave * 3;
+        c.position.y = u.y + Math.sin(t * u.v + u.f) * .35;
+      });
+      renderer.render(scene, cam);
+      if (!reducido) requestAnimationFrame(cuadro);
+    }
+    if (reducido) addEventListener('scroll', () => cuadro(0), { passive: true });
+    cuadro(0);
+  } catch (e) { cv.style.display = 'none'; }   // sin WebGL o sin conexión: la página sigue igual, sin el fondo 3D
+}
+iniciar3D();
 
 /* ---------- INICIO ---------- */
 supabase.auth.onAuthStateChange(() => { verificarSesion(); });
