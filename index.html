@@ -123,6 +123,9 @@ th{background:#eef4f3;color:var(--verde)}
 .banner-pago{display:none;max-width:1160px;margin:16px auto 0;padding:14px 20px;border-radius:8px;font-weight:600}
 .link{background:none;border:none;color:var(--verde);text-decoration:underline;cursor:pointer;font-size:14px;padding:0}
 .caja-ancha{max-width:520px;max-height:90vh;overflow:auto}
+.demo-bar{display:none;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;background:#fff6dc;border-bottom:1px solid #f0d58a;padding:10px 20px;font-size:14px}
+.demo-bar button{background:var(--verde);color:#fff;border:none;border-radius:6px;padding:7px 12px;font-weight:600;cursor:pointer;font-size:13px}
+.demo-bar button.sec{background:#e3e8e7;color:var(--texto)}
 /* ---------- MODALES ---------- */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:1000;padding:16px}
 .caja{background:#fff;width:100%;max-width:380px;padding:28px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.3)}
@@ -164,6 +167,12 @@ footer{margin-top:64px;background:var(--verde-osc);color:#a9c4bf;text-align:cent
   </div>
 </header>
 <div class="banner-pago" id="bannerPago"></div>
+<div class="demo-bar" id="demoBar">
+  <span><b>Modo demo:</b> todo funciona con datos de ejemplo guardados solo en tu navegador.</span>
+  <button onclick="demoAdmin()">Entrar como administrador</button>
+  <button onclick="demoCliente()">Entrar como cliente</button>
+  <button class="sec" onclick="demoReiniciar()">Reiniciar demo</button>
+</div>
 
 <!-- ===== PRESENTACIÓN ===== -->
 <section class="hero" id="inicio">
@@ -179,7 +188,7 @@ footer{margin-top:64px;background:var(--verde-osc);color:#a9c4bf;text-align:cent
     <div class="vistas">
       <div class="vista">
         <h3>Para tus clientes</h3>
-        <p>Ven los productos sin cuenta. Para comprar, se registran con su correo y pagan con Mercado Pago.</p>
+        <p>Ven los productos sin cuenta. Para comprar, se registran con su correo, pagan con Mercado Pago y reciben un mail con la confirmación.</p>
       </div>
       <div class="vista admin">
         <h3>Para el administrador</h3>
@@ -206,16 +215,18 @@ footer{margin-top:64px;background:var(--verde-osc);color:#a9c4bf;text-align:cent
   <p class="sub">Tres pasos para llevar el control del negocio sin planillas ni papeles.</p>
   <div class="pasos">
     <div class="paso"><h3>Cargás tus productos</h3><p>Ingresás nombre, costo, precio de venta y stock. El catálogo público se arma solo.</p></div>
-    <div class="paso"><h3>Vendés online y en el mostrador</h3><p>Las compras de la web llegan solas con el pago confirmado y descuentan stock. Las del mostrador las cargás vos y se genera el remito.</p></div>
+    <div class="paso"><h3>Vendés online y en el mostrador</h3><p>Las compras de la web llegan solas con el pago confirmado, descuentan stock y el cliente recibe un mail de confirmación. Las del mostrador las cargás vos y se genera el remito.</p></div>
     <div class="paso"><h3>Mirás cuánto ganás</h3><p>El resumen del mes muestra ventas, costos, ganancia y rentabilidad, y te avisa qué productos se están agotando.</p></div>
   </div>
 </section>
 
 <!-- ===== QUÉ INCLUYE ===== -->
 <section class="seccion" id="que-incluye">
-  <h2>Qué incluye el panel del administrador</h2>
-  <p class="sub">Cada sección del panel resuelve una tarea de todos los días.</p>
+  <h2>Qué incluye el sistema</h2>
+  <p class="sub">Una tienda online para tus clientes y un panel de gestión para vos. Cada parte resuelve una tarea de todos los días.</p>
   <div class="funciones">
+    <div class="func"><h3>Tienda online</h3><p>Tus clientes compran solos, a cualquier hora.</p><ul><li>Catálogo público con buscador</li><li>Cuenta con correo y carrito</li><li>Pago con Mercado Pago</li><li>Mail de confirmación de compra</li></ul></div>
+    <div class="func"><h3>Seguridad y acceso</h3><p>Cada persona ve solo lo que le corresponde.</p><ul><li>Solo el administrador entra al panel</li><li>Los clientes ven únicamente sus pedidos</li><li>La sesión vence a las 24 horas</li><li>El costo y el stock real nunca son públicos</li></ul></div>
     <div class="func"><h3>Resumen</h3><p>El estado del mes de un vistazo.</p><ul><li>Ventas, costos y ganancia neta</li><li>Rentabilidad</li><li>Productos con poco stock</li></ul></div>
     <div class="func"><h3>Inventario</h3><p>Todos tus productos y su stock.</p><ul><li>Crear productos</li><li>Reponer unidades y actualizar el costo</li></ul></div>
     <div class="func"><h3>Clientes</h3><p>Tus clientes habituales con su precio.</p><ul><li>Producto que compran siempre</li><li>Precio especial por cliente</li></ul></div>
@@ -228,7 +239,7 @@ footer{margin-top:64px;background:var(--verde-osc);color:#a9c4bf;text-align:cent
   <div class="panel-caja">
     <div class="panel-top">
       <h2>Panel del administrador</h2>
-      <p>Esta sección solo se ve con la sesión iniciada.</p>
+      <p>Esta sección solo la ve el administrador.</p>
     </div>
     <div class="tabs" role="tablist">
       <button class="tab activa" data-tab="tResumen">Resumen</button>
@@ -323,7 +334,8 @@ footer{margin-top:64px;background:var(--verde-osc);color:#a9c4bf;text-align:cent
 <div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitulo">
   <div class="caja">
     <h3 id="loginTitulo">Iniciar sesión</h3>
-    <p class="nota" id="loginNota">Ingresá con tu correo y contraseña. Solo el administrador accede al panel.</p>
+    <p class="nota" id="loginNota">Ingresá con tu correo y contraseña. La sesión dura 24 horas. Solo el administrador accede al panel.</p>
+    <p class="nota" id="demoHint" style="display:none">Demo: administrador admin@demo.com / demo1234. Cliente cliente@demo.com / demo1234. También podés crear una cuenta nueva.</p>
     <input type="email" id="emailAdmin" placeholder="Correo electrónico" autocomplete="username">
     <input type="password" id="passwordAdmin" placeholder="Contraseña" autocomplete="current-password">
     <p class="error" id="loginError"></p>
@@ -332,6 +344,23 @@ footer{margin-top:64px;background:var(--verde-osc);color:#a9c4bf;text-align:cent
       <button class="btn-sec" onclick="cerrarModalLogin()">Cancelar</button>
     </div>
     <p style="margin:14px 0 0;text-align:center"><button class="link" id="btnModo" onclick="cambiarModo()">¿No tenés cuenta? Crear cuenta</button></p>
+  </div>
+</div>
+
+<div class="modal" id="pagoDemoModal" role="dialog" aria-modal="true">
+  <div class="caja">
+    <h3>Mercado Pago (simulación)</h3>
+    <p class="nota">Así se ve el paso de pago. En la versión real, el cliente paga en la pantalla segura de Mercado Pago y el dinero llega a tu cuenta.</p>
+    <p>Total a pagar: <b id="pagoDemoTotal"></b></p>
+    <div style="display:flex;gap:10px"><button class="btn-accion" style="flex:1" onclick="pagoDemoOk()">Simular pago aprobado</button><button class="btn-sec" onclick="pagoDemoCancelar()">Cancelar</button></div>
+  </div>
+</div>
+<div class="modal" id="mailDemoModal" role="dialog" aria-modal="true">
+  <div class="caja caja-ancha">
+    <h3>Mail que recibe el cliente</h3>
+    <p class="nota">Se envía solo cuando el pago queda confirmado.</p>
+    <div id="mailDemoCuerpo" style="border:1px solid var(--borde);border-radius:8px;padding:14px;font-size:14px"></div>
+    <div style="margin-top:14px;text-align:right"><button class="btn-accion" onclick="document.getElementById('mailDemoModal').style.display='none'">Entendido</button></div>
   </div>
 </div>
 
@@ -370,14 +399,154 @@ footer{margin-top:64px;background:var(--verde-osc);color:#a9c4bf;text-align:cent
 </div>
 
 <script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 // ===== CONFIGURACIÓN (lo único que cambiás para cada distribuidor) =====
 const NOMBRE_NEGOCIO = 'Mi Distribuidora';
+// true = DEMO con datos de ejemplo en el navegador (no usa Supabase). false = versión real con tu base de datos.
+const MODO_DEMO = true;
 const supabaseUrl = 'https://keimmlszgznrsztdapik.supabase.co';
 const supabaseKey = 'sb_publishable_oogq08tzxSx9BWgwvvWZVg_hflO9pwK';
 const STOCK_BAJO = 5;
-const supabase = createClient(supabaseUrl, supabaseKey);
+
+/* ---------- BASE SIMULADA PARA LA DEMO (imita lo que usa la página de Supabase) ---------- */
+function crearSupabaseDemo() {
+  const KEY = 'demoDB', DIA = 864e5;
+  const iso = t => new Date(t).toISOString().slice(0, 10);
+  const maxId = arr => Math.max(0, ...arr.map(r => +r.id || 0));
+  const semilla = () => {
+    const ahora = Date.now();
+    return {
+      productos: [
+        { id:1, nombre:'Aceite de girasol 900 ml', costo:1800, precioNormal:2600, stock:48 },
+        { id:2, nombre:'Yerba mate 1 kg', costo:3200, precioNormal:4500, stock:30 },
+        { id:3, nombre:'Azúcar 1 kg', costo:900, precioNormal:1300, stock:3 },
+        { id:4, nombre:'Fideos tirabuzón 500 g', costo:700, precioNormal:1100, stock:120 },
+        { id:5, nombre:'Detergente 750 ml', costo:1500, precioNormal:2300, stock:0 },
+        { id:6, nombre:'Arroz largo fino 1 kg', costo:1100, precioNormal:1600, stock:60 }
+      ],
+      clientes: [
+        { id:1, nombre:'Almacén Don Miguel', productoId:2, precioEspecial:4200 },
+        { id:2, nombre:'Kiosco La Esquina', productoId:1, precioEspecial:2400 }
+      ],
+      ventas: [
+        { id:1, fecha:iso(ahora), cliente:'Almacén Don Miguel', producto:'Yerba mate 1 kg', cantidad:10, totalVenta:42000, totalCosto:32000 },
+        { id:2, fecha:iso(ahora), cliente:'Kiosco La Esquina', producto:'Aceite de girasol 900 ml', cantidad:12, totalVenta:28800, totalCosto:21600 },
+        { id:3, fecha:iso(ahora), cliente:'General', producto:'Fideos tirabuzón 500 g', cantidad:24, totalVenta:26400, totalCosto:16800 },
+        { id:4, fecha:iso(ahora), cliente:'Almacén Don Miguel', producto:'Arroz largo fino 1 kg', cantidad:20, totalVenta:32000, totalCosto:22000 },
+        { id:5, fecha:iso(ahora - 40 * DIA), cliente:'Kiosco La Esquina', producto:'Azúcar 1 kg', cantidad:15, totalVenta:19500, totalCosto:13500 }
+      ],
+      pedidos: [
+        { id:'ped0001-demo', user_id:'u-cliente', email:'cliente@demo.com', nombre:'Laura Gómez', telefono:'11 5555-1234', direccion:'Av. Siempreviva 742', estado:'pagado', total:5200, creado:new Date(ahora - DIA).toISOString(),
+          pedido_items:[{ producto_id:'1', nombre:'Aceite de girasol 900 ml', cantidad:2, precio_unitario:2600, costo_unitario:1800 }] },
+        { id:'ped0002-demo', user_id:'u-cliente', email:'cliente@demo.com', nombre:'Laura Gómez', telefono:'11 5555-1234', direccion:'Retiro en el local', estado:'entregado', total:4500, creado:new Date(ahora - 3 * DIA).toISOString(),
+          pedido_items:[{ producto_id:'2', nombre:'Yerba mate 1 kg', cantidad:1, precio_unitario:4500, costo_unitario:3200 }] }
+      ],
+      // Solo demo: las contraseñas se guardan en el navegador. En la versión real las maneja Supabase.
+      usuarios: [
+        { id:'u-admin', email:'admin@demo.com', password:'demo1234' },
+        { id:'u-cliente', email:'cliente@demo.com', password:'demo1234' }
+      ]
+    };
+  };
+  let db; try { db = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+  if (!db) db = semilla();
+  const guardar = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} };
+  guardar();
+
+  let sesion = null; try { sesion = JSON.parse(localStorage.getItem('demoSesion') || 'null'); } catch (e) {}
+  const oyentes = [];
+  const avisar = () => oyentes.forEach(f => { try { f('DEMO', sesion); } catch (e) {} });
+  const fallo = m => ({ data: null, error: { message: m } });
+
+  function ejecutar(q) {
+    const nombre = q.tabla === 'catalogo_publico' ? 'productos' : q.tabla;
+    const tabla = db[nombre];
+    if (!tabla) return fallo('Tabla inexistente');
+    const coincide = r => q.filtros.every(([c, v]) => String(r[c]) === String(v));
+    if (q.op === 'insert') {
+      const filas = q.datos.map(d => { const f = { id: maxId(tabla) + 1, ...d }; tabla.push(f); return f; });
+      guardar(); return { data: filas, error: null };
+    }
+    if (q.op === 'update') { tabla.filter(coincide).forEach(r => Object.assign(r, q.datos)); guardar(); return { data: null, error: null }; }
+    let filas = tabla.filter(coincide).map(r => ({ ...r }));
+    if (q.tabla === 'catalogo_publico') filas = filas.map(r => ({ id:r.id, nombre:r.nombre, precioNormal:r.precioNormal, unidades_max:Math.min(r.stock, 10) }));
+    if (q.orden) { const [c, d] = q.orden; filas.sort((a, b) => (a[c] > b[c] ? 1 : a[c] < b[c] ? -1 : 0) * d); }
+    if (q.lim) filas = filas.slice(0, q.lim);
+    return { data: filas, error: null };
+  }
+  function from(tabla) {
+    const q = { tabla, op:'select', filtros:[], orden:null, lim:null, datos:null };
+    const b = {
+      select() { return b; },
+      insert(d) { q.op = 'insert'; q.datos = d; return b; },
+      update(d) { q.op = 'update'; q.datos = d; return b; },
+      eq(c, v) { q.filtros.push([c, v]); return b; },
+      order(c, o) { q.orden = [c, o && o.ascending === false ? -1 : 1]; return b; },
+      limit(n) { q.lim = n; return b; },
+      then(ok, ko) { return Promise.resolve(ejecutar(q)).then(ok, ko); }
+    };
+    return b;
+  }
+
+  const auth = {
+    async getSession() { return { data: { session: sesion } }; },
+    async signInWithPassword({ email, password }) {
+      const u = db.usuarios.find(x => x.email === email && x.password === password);
+      if (!u) return fallo('Credenciales inválidas');
+      sesion = { user: { id:u.id, email:u.email, last_sign_in_at:new Date().toISOString() } };
+      try { localStorage.setItem('demoSesion', JSON.stringify(sesion)); } catch (e) {}
+      avisar(); return { data: { session: sesion }, error: null };
+    },
+    async signUp({ email, password }) {
+      if (db.usuarios.some(x => x.email === email)) return fallo('Ese correo ya está registrado.');
+      db.usuarios.push({ id:'u-' + Date.now(), email, password }); guardar();
+      return { data: {}, error: null };
+    },
+    async signOut() { sesion = null; try { localStorage.removeItem('demoSesion'); } catch (e) {} avisar(); return { error: null }; },
+    onAuthStateChange(cb) { oyentes.push(cb); return { data: { subscription: { unsubscribe() {} } } }; }
+  };
+
+  async function rpc(nombre, a) {
+    if (nombre === 'es_admin') return { data: !!sesion && sesion.user.email === 'admin@demo.com', error: null };
+    if (nombre === 'crear_pedido') {
+      if (!sesion) return fallo('Tenés que iniciar sesión para comprar.');
+      const items = []; let total = 0;
+      for (const it of a.items) {
+        const p = db.productos.find(x => String(x.id) === String(it.id)); const c = +it.cantidad;
+        if (!p || !(c >= 1)) return fallo('Producto o cantidad inválida.');
+        if (p.stock < c) return fallo('No hay stock suficiente de ' + p.nombre + '.');
+        items.push({ producto_id:String(p.id), nombre:p.nombre, cantidad:c, precio_unitario:p.precioNormal, costo_unitario:p.costo || 0 });
+        total += p.precioNormal * c;
+      }
+      const ped = { id:'ped' + Date.now().toString(36), user_id:sesion.user.id, email:sesion.user.email, nombre:a.p_nombre, telefono:a.p_telefono, direccion:a.p_direccion, estado:'pendiente_pago', total, creado:new Date().toISOString(), pedido_items:items };
+      db.pedidos.push(ped); guardar();
+      return { data: { id:ped.id, total }, error: null };
+    }
+    return fallo('Función no disponible en la demo');
+  }
+
+  // Imita lo que hace el servidor cuando Mercado Pago confirma el pago
+  function confirmarPago(id) {
+    const ped = db.pedidos.find(x => x.id === id);
+    if (!ped || ped.estado !== 'pendiente_pago') return null;
+    const prod = i => db.productos.find(p => String(p.id) === i.producto_id);
+    if (ped.pedido_items.some(i => prod(i).stock < i.cantidad)) { ped.estado = 'pagado_sin_stock'; guardar(); return ped; }
+    ped.pedido_items.forEach(i => {
+      prod(i).stock -= i.cantidad;
+      db.ventas.push({ id:maxId(db.ventas) + 1, fecha:iso(Date.now()), cliente:ped.nombre, producto:i.nombre, cantidad:i.cantidad, totalVenta:i.precio_unitario * i.cantidad, totalCosto:i.costo_unitario * i.cantidad });
+    });
+    ped.estado = 'pagado'; guardar(); return ped;
+  }
+  return { from, rpc, auth, functions: { invoke: async () => fallo('No disponible en la demo') }, __demo: { confirmarPago } };
+}
+
+let supabase;
+if (MODO_DEMO) {
+  supabase = crearSupabaseDemo();
+} else {
+  const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+  supabase = createClient(supabaseUrl, supabaseKey);
+}
 
 document.getElementById('nombreMarca').textContent = NOMBRE_NEGOCIO;
 document.title = NOMBRE_NEGOCIO;
@@ -453,8 +622,15 @@ window.iniciarSesionAdmin = async function() {
 ['emailAdmin','passwordAdmin'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') enviarAuth(); }));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModalLogin(); });
 
+const UN_DIA = 24 * 60 * 60 * 1000;
+const sesionVencida = ses => { const t = Date.parse(ses.user.last_sign_in_at); return !!t && Date.now() - t > UN_DIA; };
+
 async function verificarSesion() {
-  const { data: { session } } = await supabase.auth.getSession();
+  let { data: { session } } = await supabase.auth.getSession();
+  if (session && sesionVencida(session)) {
+    await supabase.auth.signOut(); session = null;
+    const b = $('bannerPago'); b.style.background = '#fff6dc'; b.textContent = 'Tu sesión venció (dura 24 horas). Iniciá sesión de nuevo.'; b.style.display = 'block';
+  }
   sesionActiva = !!session;
   usuarioId = session ? session.user.id : null;
   esAdmin = false;
@@ -637,7 +813,7 @@ function msgLogin(t, ok) { const e = $('loginError'); e.textContent = t; e.style
 window.cambiarModo = function() {
   modoRegistro = !modoRegistro;
   $('loginTitulo').textContent = modoRegistro ? 'Crear cuenta' : 'Iniciar sesión';
-  $('loginNota').textContent = modoRegistro ? 'Usá tu correo para comprar y seguir tus pedidos. Te enviamos un mensaje para confirmarlo.' : 'Ingresá con tu correo y contraseña. Solo el administrador accede al panel.';
+  $('loginNota').textContent = modoRegistro ? 'Usá tu correo para comprar y seguir tus pedidos. Te enviamos un mensaje para confirmarlo.' : 'Ingresá con tu correo y contraseña. La sesión dura 24 horas. Solo el administrador accede al panel.';
   $('btnLoginOk').textContent = modoRegistro ? 'Crear cuenta' : 'Ingresar';
   $('btnModo').textContent = modoRegistro ? '¿Ya tenés cuenta? Iniciar sesión' : '¿No tenés cuenta? Crear cuenta';
   $('loginError').style.display = 'none';
@@ -649,7 +825,7 @@ window.enviarAuth = async function() {
   const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname } });
   if (error) return msgLogin(error.message);
   $('passwordAdmin').value = '';
-  msgLogin('Listo. Te enviamos un correo: confirmalo y después iniciá sesión.', true);
+  msgLogin(MODO_DEMO ? 'Cuenta creada. En la versión real se confirma por mail. Ya podés iniciar sesión.' : 'Listo. Te enviamos un correo: confirmalo y después iniciá sesión.', true);
 }
 
 /* ---------- CARRITO Y COMPRA ---------- */
@@ -710,6 +886,7 @@ window.pagar = async function() {
   $('btnPagar').disabled = true;
   const { data, error } = await supabase.rpc('crear_pedido', { items: carrito, p_nombre: nombre, p_telefono: tel, p_direccion: dir });
   if (error) return err(error.message);
+  if (MODO_DEMO) return iniciarPagoDemo(data);
   const r = await supabase.functions.invoke('crear-pago', { body: { pedido_id: data.id } });
   if (r.error || !r.data || !r.data.init_point) return err('No pudimos iniciar el pago. Probá de nuevo en unos minutos.');
   carrito = []; guardarCarrito();
@@ -734,74 +911,53 @@ window.marcarEntregado = async function(id) {
   if (error) return alert('No se pudo actualizar: ' + error.message);
   cargarDatosAdmin();
 }
-// Crea el link de pago de Mercado Pago para un pedido del cliente logueado.
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' }
-const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { ...cors, 'Content-Type': 'application/json' } })
+/* ---------- MODO DEMO: pago y mail simulados, atajos ---------- */
+let pedidoDemo = null;
+function aviso(color, texto) { const b = $('bannerPago'); b.style.background = color; b.textContent = texto; b.style.display = 'block'; }
+function iniciarPagoDemo(ped) {
+  pedidoDemo = ped; carrito = []; guardarCarrito(); cerrarCarrito();
+  $('pagoDemoTotal').textContent = dinero(ped.total);
+  $('pagoDemoModal').style.display = 'flex';
+}
+window.pagoDemoCancelar = function() {
+  $('pagoDemoModal').style.display = 'none';
+  aviso('#fde8e6', 'El pago no se completó. El pedido queda esperando pago.');
+}
+window.pagoDemoOk = function() {
+  $('pagoDemoModal').style.display = 'none';
+  const ped = supabase.__demo.confirmarPago(pedidoDemo.id);
+  if (!ped) return;
+  cargarCatalogo();
+  aviso('#e2f0ed', '¡Gracias por tu compra! El pago se confirmó y el stock se descontó solo.');
+  const filas = ped.pedido_items.map(i => `<div>${i.cantidad} x ${esc(i.nombre)} <span style="float:right">${dinero(i.cantidad * i.precio_unitario)}</span></div>`).join('');
+  $('mailDemoCuerpo').innerHTML = `<p style="margin:0 0 8px;color:var(--gris)"><b>Para:</b> ${esc(ped.email)}<br><b>Asunto:</b> Confirmación de tu compra - ${esc(NOMBRE_NEGOCIO)}</p><hr style="border:0;border-top:1px solid var(--borde)"><p style="font-weight:700;font-size:17px">¡Gracias por tu compra, ${esc(ped.nombre)}!</p><p>Recibimos tu pago. Pedido Nº <b>${esc(ped.id.slice(0, 8).toUpperCase())}</b>.</p>${filas}<p><b>Total: ${dinero(ped.total)}</b></p><p>Entrega / retiro: ${esc(ped.direccion)}</p>`;
+  $('mailDemoModal').style.display = 'flex';
+}
+window.demoAdmin = async function() {
+  await supabase.auth.signInWithPassword({ email: 'admin@demo.com', password: 'demo1234' });
+  await verificarSesion();
+  $('panelAdmin').scrollIntoView({ behavior: 'smooth' });
+}
+window.demoCliente = async function() {
+  await supabase.auth.signInWithPassword({ email: 'cliente@demo.com', password: 'demo1234' });
+  await verificarSesion();
+  $('catalogo').scrollIntoView({ behavior: 'smooth' });
+}
+window.demoReiniciar = function() {
+  if (!confirm('¿Reiniciar la demo con los datos de ejemplo?')) return;
+  ['demoDB', 'demoSesion', 'carrito'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+  location.reload();
+}
+if (MODO_DEMO) { $('demoBar').style.display = 'flex'; $('demoHint').style.display = 'block'; }
 
-Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: cors })
-  try {
-    // Con el token del cliente: la RLS garantiza que solo lea SUS pedidos
-    const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!,
-      { global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } } })
-    const { pedido_id } = await req.json()
-    const { data: ped } = await sb.from('pedidos').select('*, pedido_items(*)').eq('id', pedido_id).single()
-    if (!ped || ped.estado !== 'pendiente_pago') throw new Error('Pedido inválido')
-
-    const site = Deno.env.get('SITE_URL')!   // ej: https://tuusuario.github.io/tu-repo
-    const r = await fetch('https://api.mercadopago.com/checkout/preferences', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${Deno.env.get('MP_ACCESS_TOKEN')}` },
-      body: JSON.stringify({
-        items: ped.pedido_items.map((i: any) => ({ title: i.nombre, quantity: i.cantidad, unit_price: Number(i.precio_unitario), currency_id: 'ARS' })),
-        payer: { email: ped.email },
-        external_reference: ped.id,
-        back_urls: { success: `${site}/?pago=ok`, pending: `${site}/?pago=pendiente`, failure: `${site}/?pago=error` },
-        auto_return: 'approved',
-        notification_url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/mp-webhook`,
-      }),
-    })
-      // Mercado Pago avisa acá cuando hay un pago. Se publica con --no-verify-jwt.
-// No confiamos en el aviso: consultamos el pago directo a Mercado Pago con nuestro token.
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-Deno.serve(async (req) => {
-  const url = new URL(req.url)
-  let body: any = {}
-  try { body = await req.json() } catch (_) {}
-  const tipo = body.type ?? url.searchParams.get('type') ?? url.searchParams.get('topic')
-  const id = body.data?.id ?? url.searchParams.get('data.id') ?? url.searchParams.get('id')
-  if (tipo !== 'payment' || !id) return new Response('ignorado')
-
-  const r = await fetch(`https://api.mercadopago.com/v1/payments/${id}`, {
-    headers: { Authorization: `Bearer ${Deno.env.get('MP_ACCESS_TOKEN')}` },
-  })
-  if (!r.ok) return new Response('error', { status: 500 })   // MP reintenta
-  const pago = await r.json()
-
-  if (pago.status === 'approved' && pago.external_reference) {
-    const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
-    const { error } = await admin.rpc('confirmar_pago', {
-      p_pedido: pago.external_reference, p_payment: String(pago.id), p_monto: pago.transaction_amount,
-    })
-    if (error) return new Response('error', { status: 500 })
-  }
-  return new Response('ok')
-})
-    const pref = await r.json()
-    if (!r.ok) throw new Error(JSON.stringify(pref))
-    return json({ init_point: pref.init_point })
-  } catch (e) {
-    return json({ error: String((e as Error).message ?? e) }, 400)
-  }
-})
 /* ---------- INICIO ---------- */
 supabase.auth.onAuthStateChange(() => { verificarSesion(); });
 mostrarRetornoPago();
 cargarCatalogo();
 verificarSesion();
+// cada 5 minutos revisa si la sesión ya cumplió 24 horas
+setInterval(async () => { const { data: { session } } = await supabase.auth.getSession(); if (session && sesionVencida(session)) verificarSesion(); }, 300000);
 </script>
 </body>
 </html>
