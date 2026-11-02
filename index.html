@@ -659,7 +659,7 @@ window.iniciarSesionAdmin = async function() {
   await verificarSesion();
   if (esAdmin) $('panelAdmin').scrollIntoView({ behavior: 'smooth' });
   else aviso('#e2f0ed', 'Sesión iniciada. Ya podés comprar y ver tus pedidos.');
-}
+};
 ['emailAdmin','passwordAdmin'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') enviarAuth(); }));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModalLogin(); });
 
