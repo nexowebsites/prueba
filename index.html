@@ -369,7 +369,7 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
   <div class="caja">
     <h3 id="loginTitulo">Iniciar sesión</h3>
     <p class="nota" id="loginNota">Ingresá con tu correo y contraseña. La sesión dura 24 horas. Solo el administrador accede al panel.</p>
-    <p class="nota" id="demoHint" style="display:none">Demo: administrador admin@demo.com / demo1234. Cliente cliente@demo.com / demo1234. También podés crear una cuenta nueva.</p>
+    <p class="nota" id="demoHint" style="display:none;background:#fff6dc;border-radius:6px;padding:8px 10px;color:var(--texto)">Demo: administrador admin@demo.com / demo1234. Cliente cliente@demo.com / demo1234. También podés crear una cuenta nueva.</p>
     <input type="email" id="emailAdmin" placeholder="Correo electrónico" autocomplete="username">
     <input type="password" id="passwordAdmin" placeholder="Contraseña" autocomplete="current-password">
     <p class="error" id="loginError"></p>
@@ -436,8 +436,9 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
 
 // ===== CONFIGURACIÓN (lo único que cambiás para cada distribuidor) =====
 const NOMBRE_NEGOCIO = 'Mi Distribuidora';
-// true = DEMO con datos de ejemplo en el navegador (no usa Supabase). false = versión real con tu base de datos.
-const MODO_DEMO = true;
+// true = DEMO con datos de ejemplo (no usa Supabase). false = versión real conectada a tu Supabase.
+let MODO_DEMO = true;
+let falloConexion = false;
 const supabaseUrl = 'https://keimmlszgznrsztdapik.supabase.co';
 const supabaseKey = 'sb_publishable_oogq08tzxSx9BWgwvvWZVg_hflO9pwK';
 const STOCK_BAJO = 5;
@@ -526,7 +527,7 @@ function crearSupabaseDemo() {
     async getSession() { return { data: { session: sesion } }; },
     async signInWithPassword({ email, password }) {
       const u = db.usuarios.find(x => x.email === email && x.password === password);
-      if (!u) return fallo('Credenciales inválidas');
+      if (!u) return fallo('Invalid login credentials');
       sesion = { user: { id:u.id, email:u.email, last_sign_in_at:new Date().toISOString() } };
       try { localStorage.setItem('demoSesion', JSON.stringify(sesion)); } catch (e) {}
       avisar(); return { data: { session: sesion }, error: null };
@@ -556,6 +557,7 @@ function crearSupabaseDemo() {
       db.pedidos.push(ped); guardar();
       return { data: { id:ped.id, total }, error: null };
     }
+    if (nombre === 'correo_registrado') return { data: db.usuarios.some(u => u.email.toLowerCase() === String(a.p_email).toLowerCase()), error: null };
     return fallo('Función no disponible en la demo');
   }
 
@@ -578,8 +580,12 @@ let supabase;
 if (MODO_DEMO) {
   supabase = crearSupabaseDemo();
 } else {
-  const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
-  supabase = createClient(supabaseUrl, supabaseKey);
+  try {
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+    supabase = createClient(supabaseUrl, supabaseKey);
+  } catch (e) {   // sin conexión con el servicio: la página sigue funcionando en modo demo
+    falloConexion = true; MODO_DEMO = true; supabase = crearSupabaseDemo();
+  }
 }
 
 document.getElementById('nombreMarca').textContent = NOMBRE_NEGOCIO;
@@ -642,16 +648,17 @@ window.cerrarModalLogin = () => { $('loginModal').style.display = 'none'; }
 window.iniciarSesionAdmin = async function() {
   const email = $('emailAdmin').value.trim();
   const password = $('passwordAdmin').value;
+  if (!email || !password) return msgLogin('Ingresá tu correo y tu contraseña.');
+  if (!/^\S+@\S+\.\S+$/.test(email)) return msgLogin('El correo no es válido. Revisalo.');
+  $('btnLoginOk').disabled = true; $('btnLoginOk').textContent = 'Ingresando...';
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) {
-    $('loginError').textContent = 'No pudimos iniciar sesión. Revisá el correo y la contraseña.';
-    $('loginError').style.display = 'block';
-    return;
-  }
+  $('btnLoginOk').disabled = false; $('btnLoginOk').textContent = 'Ingresar';
+  if (error) return msgLogin(await explicarError(error, email));
   $('passwordAdmin').value = '';
   cerrarModalLogin();
   await verificarSesion();
-  $('panelAdmin').scrollIntoView({ behavior: 'smooth' });
+  if (esAdmin) $('panelAdmin').scrollIntoView({ behavior: 'smooth' });
+  else aviso('#e2f0ed', 'Sesión iniciada. Ya podés comprar y ver tus pedidos.');
 }
 ['emailAdmin','passwordAdmin'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') enviarAuth(); }));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModalLogin(); });
@@ -668,7 +675,11 @@ async function verificarSesion() {
   sesionActiva = !!session;
   usuarioId = session ? session.user.id : null;
   esAdmin = false;
-  if (sesionActiva) { const { data: adm } = await supabase.rpc('es_admin'); esAdmin = adm === true; }
+  if (sesionActiva) {
+    const { data: adm, error: eAdm } = await supabase.rpc('es_admin');
+    esAdmin = adm === true;
+    if (eAdm) aviso('#fde8e6', 'No se pudo verificar el acceso de administrador. Ejecutá schema.sql en el SQL Editor de Supabase.');
+  }
   $('btnAuth').textContent = sesionActiva ? 'Cerrar sesión' : 'Iniciar sesión';
   $('btnPanel').style.display = esAdmin ? 'inline-block' : 'none';
   $('panelAdmin').style.display = esAdmin ? 'block' : 'none';
@@ -842,6 +853,18 @@ function calcularFinanzasMes() {
 }
 
 /* ---------- CUENTA DE CLIENTE ---------- */
+async function explicarError(error, email) {
+  const m = (error.message || '').toLowerCase();
+  if (m.includes('not confirmed')) return 'Todavía no confirmaste tu correo. Revisá tu bandeja de entrada (y el spam).';
+  if (m.includes('invalid')) {
+    const { data: existe, error: e2 } = await supabase.rpc('correo_registrado', { p_email: email });
+    if (!e2 && existe === false) return 'Ese correo no está registrado. Podés crear una cuenta.' + (MODO_DEMO ? ' En la demo usá admin@demo.com y la contraseña demo1234.' : '');
+    if (!e2 && existe === true) return 'La contraseña es incorrecta.';
+    return 'Correo o contraseña incorrectos.';
+  }
+  if (m.includes('rate') || m.includes('too many')) return 'Demasiados intentos. Esperá unos minutos y probá de nuevo.';
+  return 'No pudimos iniciar sesión: ' + error.message;
+}
 let modoRegistro = false;
 function msgLogin(t, ok) { const e = $('loginError'); e.textContent = t; e.style.color = ok ? '#1b7a4b' : ''; e.style.display = 'block'; }
 window.cambiarModo = function() {
@@ -856,6 +879,8 @@ window.enviarAuth = async function() {
   if (!modoRegistro) return iniciarSesionAdmin();
   const email = $('emailAdmin').value.trim(), password = $('passwordAdmin').value;
   if (!email || password.length < 8) return msgLogin('Ingresá tu correo y una contraseña de al menos 8 caracteres.');
+  const { data: ya } = await supabase.rpc('correo_registrado', { p_email: email });
+  if (ya === true) return msgLogin('Ese correo ya está registrado. Iniciá sesión.');
   const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname } });
   if (error) return msgLogin(error.message);
   $('passwordAdmin').value = '';
@@ -866,9 +891,10 @@ window.enviarAuth = async function() {
 const ESTADOS = { pendiente_pago:'Esperando pago', pagado:'Pagado', entregado:'Entregado', cancelado:'Cancelado', pagado_sin_stock:'Pagado, te contactaremos', monto_incorrecto:'En revisión' };
 const ESTADOS_ADM = { ...ESTADOS, pagado_sin_stock:'Pagado sin stock: reponé o devolvé', monto_incorrecto:'Revisá el pago en Mercado Pago' };
 let carrito = [];
-try { carrito = JSON.parse(localStorage.getItem('carrito') || '[]'); } catch (e) {}
+const CLAVE_CARRITO = MODO_DEMO ? 'carritoDemo' : 'carrito';
+try { carrito = JSON.parse(localStorage.getItem(CLAVE_CARRITO) || '[]'); } catch (e) {}
 function guardarCarrito() {
-  try { localStorage.setItem('carrito', JSON.stringify(carrito)); } catch (e) {}
+  try { localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito)); } catch (e) {}
   $('cantCarrito').textContent = carrito.reduce((a, i) => a + i.cantidad, 0);
 }
 const buscarProd = id => catalogo.find(x => String(x.id) === String(id));
@@ -980,10 +1006,11 @@ window.demoCliente = async function() {
 }
 window.demoReiniciar = function() {
   if (!confirm('¿Reiniciar la demo con los datos de ejemplo?')) return;
-  ['demoDB', 'demoSesion', 'carrito'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+  ['demoDB', 'demoSesion', 'carritoDemo'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
   location.reload();
 }
 if (MODO_DEMO) { $('demoBar').style.display = 'flex'; $('demoHint').style.display = 'block'; }
+if (falloConexion) aviso('#fff6dc', 'No pudimos conectar con el servidor: se muestra la demo con datos de ejemplo.');
 
 /* ---------- MOVIMIENTO: aparición suave al deslizar + barra de progreso ---------- */
 const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
