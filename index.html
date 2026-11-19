@@ -89,7 +89,7 @@ header{position:sticky;top:0;z-index:100;background:var(--verde);color:#fff}
 
 /* ---------- PANEL ADMIN ---------- */
 #panelAdmin{display:none;max-width:1200px;margin:56px auto 0;padding:0 20px}
-.panel-caja{background:#fff;border:2px solid var(--verde);border-radius:12px;overflow:hidden}
+.panel-caja{background:#fff;border:2px solid var(--verde);border-radius:12px;overflow:hidden;overflow:clip}
 .panel-top{background:var(--verde);color:#fff;padding:16px 22px}
 .panel-top h2{font-size:24px;color:#fff;border:0;margin:0}
 .panel-top p{margin:4px 0 0;color:#cfe3df;font-size:14px}
@@ -127,6 +127,40 @@ th{background:#eef4f3;color:var(--verde)}
 .demo-bar{display:none;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;background:#fff6dc;border-bottom:1px solid #f0d58a;padding:10px 20px;font-size:14px}
 .demo-bar button{background:var(--verde);color:#fff;border:none;border-radius:6px;padding:7px 12px;font-weight:600;cursor:pointer;font-size:13px}
 .demo-bar button.sec{background:#e3e8e7;color:var(--texto)}
+textarea{padding:10px;border:1px solid #bccac7;border-radius:6px;width:100%;font-size:15px;font-family:inherit;resize:vertical}
+/* ---------- NUEVA VENTA ---------- */
+.vgrid{display:grid;grid-template-columns:1.7fr 1fr;gap:16px;align-items:start}
+.vcard{border:1px solid var(--borde);border-radius:12px;background:#fff;overflow:hidden}
+.vcard-h{padding:10px 16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gris);font-weight:700;border-bottom:1px solid var(--borde);background:#fafcfc}
+.vcard-b{padding:14px 16px}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:10px;border:1px solid var(--borde);background:#fff;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;color:var(--gris)}
+.seg button.on{background:var(--verde);color:#fff;border-color:var(--verde)}
+#vProductos{max-height:440px;overflow:auto}
+.fila{display:grid;grid-template-columns:1fr 74px 70px 96px;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--borde)}
+.fila.on{background:var(--verde-claro)}
+.fhead{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--gris);font-weight:700;background:#fafcfc;padding-top:8px;padding-bottom:8px}
+.fi b{display:block;font-size:14.5px}.fi small{color:var(--gris);font-size:12.5px}
+.fila input{padding:8px;text-align:center;margin:0}
+.pct{position:relative}.pct input{padding-right:22px}
+.pct::after{content:"%";position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--gris);pointer-events:none}
+.fila .sub{text-align:right;font-weight:700;color:var(--verde);font-size:14px}
+.barra-total{position:sticky;bottom:0;z-index:20;background:var(--verde);color:#fff;border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:16px;box-shadow:0 -6px 24px rgba(15,44,40,.28)}
+.barra-total .t{font-family:var(--titulos);font-size:26px;font-weight:800;line-height:1.1}
+.barra-total .det{font-size:13px;color:#cfe3df}
+.barra-total .btn{margin-left:auto}.barra-total .btn:disabled{opacity:.5;cursor:not-allowed}
+.rt{width:100%;min-width:0;margin:12px 0}.rt th,.rt td{padding:7px 8px;font-size:13px}
+.rtot{margin-left:auto;max-width:300px}.rtot div{display:flex;justify-content:space-between;gap:16px;padding:3px 0;font-size:14px}
+.rtot .g{border-top:2px solid var(--texto);margin-top:4px;padding-top:6px;font-size:18px;font-weight:800}
+.rn{margin-top:12px;font-size:13.5px}
+@media(max-width:760px){
+  .vgrid{grid-template-columns:1fr}
+  .fhead{display:none}
+  .fila{grid-template-columns:1fr 1fr 1fr;grid-template-areas:"n n n" "q d s"}
+  .fila .fi{grid-area:n}.fila>input{grid-area:q}.fila .pct{grid-area:d}.fila .sub{grid-area:s}
+  .barra-total{padding:10px 14px;gap:10px;flex-wrap:nowrap}.barra-total .t{font-size:22px}#vDetalle{display:none}
+  .barra-total .btn{width:auto;margin-left:auto;padding:10px 14px;font-size:14px}
+}
 /* ---------- MODALES ---------- */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:1000;padding:16px}
 .caja{background:#fff;width:100%;max-width:380px;padding:28px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.3)}
@@ -135,7 +169,7 @@ th{background:#eef4f3;color:var(--verde)}
 .caja .nota{font-size:13px;color:var(--gris);margin:0 0 14px}
 .btn-sec{background:#e3e8e7;color:var(--texto);border:none;padding:11px 18px;border-radius:6px;cursor:pointer;font-weight:600;font-size:15px}
 .error{color:var(--rojo);font-size:14px;margin:0 0 10px;display:none}
-.remito-caja{max-width:450px}
+.remito-caja{max-width:620px;max-height:92vh;overflow:auto}
 .remito-head{text-align:center;border-bottom:2px dashed #333;padding-bottom:10px;margin-bottom:14px}
 .remito-head h3{color:var(--texto)}
 
@@ -264,7 +298,7 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
     <div class="func"><h3>Resumen</h3><p>El estado del mes de un vistazo.</p><ul><li>Ventas, costos y ganancia neta</li><li>Rentabilidad</li><li>Productos con poco stock</li></ul></div>
     <div class="func"><h3>Inventario</h3><p>Todos tus productos y su stock.</p><ul><li>Crear productos</li><li>Reponer unidades y actualizar el costo</li></ul></div>
     <div class="func"><h3>Clientes</h3><p>Tus clientes habituales con su precio.</p><ul><li>Producto que compran siempre</li><li>Precio especial por cliente</li></ul></div>
-    <div class="func"><h3>Ventas y remitos</h3><p>Registrá una venta en segundos.</p><ul><li>Descuenta el stock automáticamente</li><li>Remito listo para imprimir o guardar en PDF</li></ul></div>
+    <div class="func"><h3>Ventas y remitos</h3><p>Registrá una venta en segundos.</p><ul><li>Dos listas de precios: mayorista y especial</li><li>Descuento por producto y descuento general</li><li>Descuenta el stock automáticamente</li><li>Remito listo para imprimir o guardar en PDF</li></ul></div>
   </div>
 </section>
 
@@ -303,11 +337,13 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
     <!-- Inventario -->
     <div class="tab-cuerpo" id="tInventario">
       <h3>Crear un producto</h3>
-      <p class="ayuda">Aparecerá en el catálogo público con su precio de venta. El costo es privado.</p>
+      <p class="ayuda">Aparecerá en el catálogo público con el precio de tienda online. Las ventas usan la lista mayorista o la especial. El costo es privado.</p>
       <div class="form-grid">
         <div><label for="pNombre">Nombre</label><input type="text" id="pNombre" placeholder="Ej. Arena sanitaria 4 kg"></div>
         <div><label for="pCosto">Costo ($)</label><input type="number" id="pCosto" min="0"></div>
-        <div><label for="pPrecioNormal">Precio de venta ($)</label><input type="number" id="pPrecioNormal" min="0"></div>
+        <div><label for="pPrecioNormal">Precio tienda online ($)</label><input type="number" id="pPrecioNormal" min="0"></div>
+        <div><label for="pPrecioMayorista">Precio mayorista ($)</label><input type="number" id="pPrecioMayorista" min="0"></div>
+        <div><label for="pPrecioEspecial">Precio especial ($)</label><input type="number" id="pPrecioEspecial" min="0"></div>
         <div><label for="pStockInicial">Stock inicial</label><input type="number" id="pStockInicial" min="0"></div>
       </div>
       <button class="btn-accion" onclick="guardarProducto()">Crear producto</button>
@@ -323,7 +359,19 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
         <button class="btn-accion" onclick="reponerStock()">Actualizar stock</button>
       </div>
 
-      <div class="tabla-wrap"><table id="tablaInventario"><thead><tr><th>Producto</th><th>Stock</th><th>Costo</th><th>Precio de venta</th></tr></thead><tbody></tbody></table></div>
+      <div class="bloque">
+        <h3>Cambiar precios</h3>
+        <p class="ayuda">Completá solo los precios que quieras cambiar. Si un producto no tiene precio mayorista o especial, las ventas usan el precio de tienda online.</p>
+        <div class="form-grid">
+          <div><label for="precioProducto">Producto</label><select id="precioProducto"></select></div>
+          <div><label for="nPrecioNormal">Tienda online ($)</label><input type="number" id="nPrecioNormal" min="0"></div>
+          <div><label for="nPrecioMayorista">Mayorista ($)</label><input type="number" id="nPrecioMayorista" min="0"></div>
+          <div><label for="nPrecioEspecial">Especial ($)</label><input type="number" id="nPrecioEspecial" min="0"></div>
+        </div>
+        <button class="btn-accion" onclick="cambiarPrecios()">Guardar precios</button>
+      </div>
+
+      <div class="tabla-wrap"><table id="tablaInventario"><thead><tr><th>Producto</th><th>Stock</th><th>Costo</th><th>Tienda online</th><th>Mayorista</th><th>Especial</th></tr></thead><tbody></tbody></table></div>
     </div>
 
     <!-- Clientes -->
@@ -333,7 +381,7 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
       <div class="form-grid">
         <div><label for="cNombre">Nombre</label><input type="text" id="cNombre" placeholder="Ej. Miguel"></div>
         <div><label for="cProductoFavorito">Producto habitual</label><select id="cProductoFavorito"></select></div>
-        <div><label for="cPrecioEspecial">Precio especial ($)</label><input type="number" id="cPrecioEspecial" min="0"></div>
+        <div><label for="cPrecioEspecial">Precio especial de ese producto ($)</label><input type="number" id="cPrecioEspecial" min="0"></div>
       </div>
       <button class="btn-accion" onclick="guardarCliente()">Guardar cliente</button>
       <div class="tabla-wrap"><table id="tablaClientes"><thead><tr><th>Cliente</th><th>Producto habitual</th><th>Precio especial</th></tr></thead><tbody></tbody></table></div>
@@ -348,15 +396,42 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
 
     <!-- Ventas -->
     <div class="tab-cuerpo" id="tVentas">
-      <h3>Registrar una venta</h3>
-      <p class="ayuda">Al confirmar, se descuenta el stock y se genera el remito.</p>
-      <div class="form-grid">
-        <div><label for="vCliente">Cliente</label><select id="vCliente" onchange="cargarPreferenciaCliente()"></select></div>
-        <div><label for="vProducto">Producto</label><select id="vProducto" onchange="ajustarPrecioVenta()"></select></div>
-        <div><label for="vCantidad">Cantidad</label><input type="number" id="vCantidad" value="1" min="1"></div>
-        <div><label for="vPrecioUnitario">Precio unitario ($)</label><input type="number" id="vPrecioUnitario" min="0"></div>
+      <h3>Nueva venta</h3>
+      <p class="ayuda">Elegí la lista de precios, buscá los productos y cargá unidades y descuentos. El total se va calculando abajo.</p>
+      <div class="vgrid">
+        <div>
+          <div class="vcard">
+            <div class="vcard-h">1 — Cliente y lista de precios</div>
+            <div class="vcard-b">
+              <label for="vCliente">Cliente</label><select id="vCliente" onchange="cambiarClienteVenta()"></select>
+              <label style="margin-top:12px">Lista de precios</label>
+              <div class="seg" id="vLista"><button type="button" class="on" data-l="mayorista" onclick="elegirLista('mayorista')">Mayorista</button><button type="button" data-l="especial" onclick="elegirLista('especial')">Especial</button></div>
+            </div>
+          </div>
+          <div class="vcard" style="margin-top:16px">
+            <div class="vcard-h">2 — Productos</div>
+            <div class="vcard-b" style="padding-bottom:10px"><input type="search" id="vBuscar" placeholder="Buscar producto por nombre..." oninput="renderVenta()" aria-label="Buscar producto"></div>
+            <div class="fila fhead"><span>Producto</span><span>Unid.</span><span>Desc.</span><span style="text-align:right">Subtotal</span></div>
+            <div id="vProductos"></div>
+          </div>
+        </div>
+        <div class="vcard">
+          <div class="vcard-h">3 — Condiciones</div>
+          <div class="vcard-b">
+            <label for="vDescGral">Descuento general (%)</label>
+            <input type="number" id="vDescGral" min="0" max="100" placeholder="0" oninput="actualizarTotales()">
+            <p class="ayuda" style="margin:6px 0 12px">Se aplica sobre el subtotal, después de los descuentos de cada producto.</p>
+            <label for="vNotas">Notas para el remito</label>
+            <textarea id="vNotas" rows="3" placeholder="Instrucciones de entrega, observaciones..."></textarea>
+          </div>
+        </div>
       </div>
-      <button class="btn-accion" onclick="procesarVenta()">Vender y emitir remito</button>
+      <div class="barra-total">
+        <div><div class="det" id="vUnidades">0 unidades</div><div class="t" id="vTotal">$0</div></div>
+        <div class="det" id="vDetalle"></div>
+        <button class="btn btn-claro" id="vBtnConfirmar" onclick="procesarVenta()" disabled>Confirmar y emitir remito</button>
+      </div>
+      <h3 style="margin-top:28px">Ventas registradas</h3>
       <div class="tabla-wrap"><table id="tablaVentas"><thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Cant.</th><th>Total</th></tr></thead><tbody></tbody></table></div>
     </div>
   </div>
@@ -417,14 +492,7 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
 <!-- ===== REMITO ===== -->
 <div class="modal" id="remitoModal">
   <div class="caja remito-caja">
-    <div class="remito-head">
-      <h3>REMITO DE ENTREGA</h3>
-      <p id="remitoFecha">Fecha: --/--/----</p>
-    </div>
-    <p><strong>Cliente:</strong> <span id="remitoCliente">--</span></p>
-    <p><strong>Detalle:</strong> <span id="remitoDetalle">--</span></p>
-    <p><strong>Cantidad:</strong> <span id="remitoCantidad">--</span></p>
-    <h3 style="text-align:right;color:var(--texto)">Total: <span id="remitoTotal">$0</span></h3>
+    <div id="remitoCuerpo"></div>
     <div class="no-print" style="text-align:center;margin-top:20px;display:flex;gap:10px;justify-content:center">
       <button class="btn-accion" onclick="window.print()">Imprimir / Guardar PDF</button>
       <button class="btn-sec" onclick="cerrarRemito()">Cerrar</button>
@@ -445,19 +513,19 @@ const STOCK_BAJO = 5;
 
 /* ---------- BASE SIMULADA PARA LA DEMO (imita lo que usa la página de Supabase) ---------- */
 function crearSupabaseDemo() {
-  const KEY = 'demoDB', DIA = 864e5;
+  const KEY = 'demoDB2', DIA = 864e5;
   const iso = t => new Date(t).toISOString().slice(0, 10);
   const maxId = arr => Math.max(0, ...arr.map(r => +r.id || 0));
   const semilla = () => {
     const ahora = Date.now();
     return {
       productos: [
-        { id:1, nombre:'Aceite de girasol 900 ml', costo:1800, precioNormal:2600, stock:48 },
-        { id:2, nombre:'Yerba mate 1 kg', costo:3200, precioNormal:4500, stock:30 },
-        { id:3, nombre:'Azúcar 1 kg', costo:900, precioNormal:1300, stock:3 },
-        { id:4, nombre:'Fideos tirabuzón 500 g', costo:700, precioNormal:1100, stock:120 },
-        { id:5, nombre:'Detergente 750 ml', costo:1500, precioNormal:2300, stock:0 },
-        { id:6, nombre:'Arroz largo fino 1 kg', costo:1100, precioNormal:1600, stock:60 }
+        { id:1, nombre:'Aceite de girasol 900 ml', costo:1800, precioNormal:2600, precioMayorista:2200, precioEspecial:2400, stock:48 },
+        { id:2, nombre:'Yerba mate 1 kg', costo:3200, precioNormal:4500, precioMayorista:3900, precioEspecial:4200, stock:30 },
+        { id:3, nombre:'Azúcar 1 kg', costo:900, precioNormal:1300, precioMayorista:1100, precioEspecial:1200, stock:3 },
+        { id:4, nombre:'Fideos tirabuzón 500 g', costo:700, precioNormal:1100, precioMayorista:920, precioEspecial:1000, stock:120 },
+        { id:5, nombre:'Detergente 750 ml', costo:1500, precioNormal:2300, precioMayorista:1950, precioEspecial:2100, stock:0 },
+        { id:6, nombre:'Arroz largo fino 1 kg', costo:1100, precioNormal:1600, precioMayorista:1350, precioEspecial:1450, stock:60 }
       ],
       clientes: [
         { id:1, nombre:'Almacén Don Miguel', productoId:2, precioEspecial:4200 },
@@ -592,7 +660,7 @@ document.getElementById('nombreMarca').textContent = NOMBRE_NEGOCIO;
 document.title = NOMBRE_NEGOCIO;
 
 const $ = id => document.getElementById(id);
-const dinero = n => '$' + (Number(n) || 0).toLocaleString('es-AR');
+const dinero = n => '$' + (Math.round((Number(n) || 0) * 100) / 100).toLocaleString('es-AR');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 let sesionActiva = false, esAdmin = false, usuarioId = null, pedidos = [];
@@ -718,11 +786,25 @@ window.guardarProducto = async function() {
   const nombre = $('pNombre').value.trim();
   const costo = parseFloat($('pCosto').value) || 0;
   const precioNormal = parseFloat($('pPrecioNormal').value) || 0;
+  const precioMayorista = parseFloat($('pPrecioMayorista').value) || 0;
+  const precioEspecial = parseFloat($('pPrecioEspecial').value) || 0;
   const stock = parseInt($('pStockInicial').value) || 0;
   if (!nombre) return alert('Ingresá el nombre del producto.');
-  const { error } = await supabase.from('productos').insert([{ nombre, costo, precioNormal, stock }]);
+  const { error } = await supabase.from('productos').insert([{ nombre, costo, precioNormal, precioMayorista, precioEspecial, stock }]);
   if (error) return alert('No se pudo guardar: ' + error.message);
-  ['pNombre','pCosto','pPrecioNormal','pStockInicial'].forEach(id => $(id).value = '');
+  ['pNombre','pCosto','pPrecioNormal','pPrecioMayorista','pPrecioEspecial','pStockInicial'].forEach(id => $(id).value = '');
+  cargarDatosAdmin();
+}
+
+window.cambiarPrecios = async function() {
+  const id = $('precioProducto').value;
+  if (!inventario.find(p => p.id == id)) return alert('Elegí un producto.');
+  const datos = {};
+  [['nPrecioNormal','precioNormal'],['nPrecioMayorista','precioMayorista'],['nPrecioEspecial','precioEspecial']].forEach(([i, k]) => { const v = parseFloat($(i).value); if (!isNaN(v)) datos[k] = v; });
+  if (!Object.keys(datos).length) return alert('Ingresá al menos un precio nuevo.');
+  const { error } = await supabase.from('productos').update(datos).eq('id', id);
+  if (error) return alert('No se pudo actualizar: ' + error.message);
+  ['nPrecioNormal','nPrecioMayorista','nPrecioEspecial'].forEach(i => $(i).value = '');
   cargarDatosAdmin();
 }
 
@@ -755,62 +837,108 @@ function actualizarSelects() {
   const opts = inventario.map(p => `<option value="${esc(p.id)}">${esc(p.nombre)} (stock: ${p.stock})</option>`).join('');
   $('repoProducto').innerHTML = '<option value="">Elegí un producto</option>' + opts;
   $('cProductoFavorito').innerHTML = '<option value="">Sin producto habitual</option>' + opts;
-  $('vProducto').innerHTML = '<option value="">Elegí un producto</option>' +
-    inventario.map(p => `<option value="${esc(p.id)}" data-precio="${p.precioNormal}">${esc(p.nombre)} (${dinero(p.precioNormal)})</option>`).join('');
-  $('vCliente').innerHTML = '<option value="">Elegí un cliente</option>' +
-    clientes.map(c => `<option value="${esc(c.id)}" data-fav="${esc(c.productoId)}" data-especial="${c.precioEspecial || 0}">${esc(c.nombre)}</option>`).join('');
+  const cv = $('vCliente').value;
+  $('vCliente').innerHTML = '<option value="">Cliente general (mostrador)</option>' +
+    clientes.map(c => `<option value="${esc(c.id)}">${esc(c.nombre)}</option>`).join('');
+  $('vCliente').value = cv;
+  $('precioProducto').innerHTML = '<option value="">Elegí un producto</option>' + opts;
+  renderVenta();
 }
 
-window.cargarPreferenciaCliente = function() {
-  const sel = $('vCliente');
-  const opt = sel.options[sel.selectedIndex];
-  const fav = opt.getAttribute('data-fav');
-  const esp = parseFloat(opt.getAttribute('data-especial')) || 0;
-  if (fav && fav !== 'null' && fav !== '') {
-    $('vProducto').value = fav;
-    if (esp > 0) $('vPrecioUnitario').value = esp;
-    else ajustarPrecioVenta();
-  }
+/* ---------- NUEVA VENTA: varios productos, lista de precios y descuentos ---------- */
+const orden = { lista: 'mayorista', cant: {}, desc: {} };
+const clienteVenta = () => clientes.find(c => String(c.id) === String($('vCliente').value));
+function precioLinea(p) {
+  const cli = clienteVenta();
+  if (cli && cli.productoId != null && String(cli.productoId) === String(p.id) && Number(cli.precioEspecial) > 0) return { pu: Number(cli.precioEspecial), tag: 'precio del cliente' };
+  const pu = orden.lista === 'especial' ? (p.precioEspecial || p.precioNormal) : (p.precioMayorista || p.precioNormal);
+  return { pu: Number(pu) || 0, tag: '' };
 }
-
-window.ajustarPrecioVenta = function() {
-  const sp = $('vProducto');
-  const normal = sp.options[sp.selectedIndex].getAttribute('data-precio') || 0;
-  const oc = $('vCliente').options[$('vCliente').selectedIndex];
-  const fav = oc.getAttribute('data-fav');
-  const esp = parseFloat(oc.getAttribute('data-especial')) || 0;
-  $('vPrecioUnitario').value = (fav == sp.value && esp > 0) ? esp : normal;
+window.elegirLista = function(l) {
+  orden.lista = l;
+  document.querySelectorAll('#vLista button').forEach(b => b.classList.toggle('on', b.dataset.l === l));
+  renderVenta();
+};
+window.cambiarClienteVenta = () => renderVenta();
+function renderVenta() {
+  const q = ($('vBuscar').value || '').trim().toLowerCase();
+  const lista = inventario.filter(p => p.nombre.toLowerCase().includes(q));
+  $('vProductos').innerHTML = lista.map(p => {
+    const { pu, tag } = precioLinea(p), id = esc(p.id), c = orden.cant[p.id] || '', d = orden.desc[p.id] || '';
+    return `<div class="fila${c ? ' on' : ''}" id="f-${id}"><div class="fi"><b>${esc(p.nombre)}</b><small>Stock ${p.stock} · ${dinero(pu)}${tag ? ' · ' + tag : ''}</small></div><input type="number" inputmode="numeric" min="0" max="${p.stock}" placeholder="0" value="${c}" ${p.stock <= 0 ? 'disabled' : ''} oninput="cambiarQ('${id}', this)" aria-label="Unidades de ${esc(p.nombre)}"><div class="pct"><input type="number" inputmode="decimal" min="0" max="100" placeholder="0" value="${d}" oninput="cambiarD('${id}', this)" aria-label="Descuento de ${esc(p.nombre)}"></div><span class="sub" id="s-${id}"></span></div>`;
+  }).join('') || '<div class="vacio" style="margin:14px">No hay productos que coincidan.</div>';
+  actualizarTotales();
 }
+window.renderVenta = renderVenta;
+window.cambiarQ = function(id, el) {
+  const p = inventario.find(x => String(x.id) === String(id));
+  let n = Math.max(0, parseInt(el.value) || 0);
+  if (p && n > p.stock) { n = p.stock; el.value = n; }
+  if (n) orden.cant[id] = n; else delete orden.cant[id];
+  actualizarTotales();
+};
+window.cambiarD = function(id, el) {
+  const v = parseFloat(el.value) || 0, n = Math.min(100, Math.max(0, v));
+  if (el.value !== '' && n !== v) el.value = n;
+  if (n) orden.desc[id] = n; else delete orden.desc[id];
+  actualizarTotales();
+};
+function totalesVenta() {
+  const ls = inventario.filter(p => orden.cant[p.id] > 0).map(p => {
+    const { pu } = precioLinea(p), cant = orden.cant[p.id], d = orden.desc[p.id] || 0, bruto = cant * pu;
+    return { p, cant, pu, d, bruto, neto: bruto * (1 - d / 100) };
+  });
+  const bruto = ls.reduce((a, l) => a + l.bruto, 0), sub = ls.reduce((a, l) => a + l.neto, 0);
+  const dg = Math.min(100, Math.max(0, parseFloat($('vDescGral').value) || 0)), descGral = sub * dg / 100;
+  return { ls, unidades: ls.reduce((a, l) => a + l.cant, 0), bruto, sub, descLineas: bruto - sub, dg, descGral, total: sub - descGral };
+}
+function actualizarTotales() {
+  inventario.forEach(p => {
+    const e = $('s-' + p.id); if (!e) return;
+    const c = orden.cant[p.id] || 0;
+    e.textContent = c ? dinero(c * precioLinea(p).pu * (1 - (orden.desc[p.id] || 0) / 100)) : '';
+    $('f-' + p.id).classList.toggle('on', c > 0);
+  });
+  const t = totalesVenta();
+  $('vUnidades').textContent = t.unidades + (t.unidades === 1 ? ' unidad' : ' unidades');
+  $('vDetalle').textContent = 'Subtotal ' + dinero(t.bruto) + ' · Descuentos −' + dinero(t.descLineas + t.descGral);
+  $('vTotal').textContent = dinero(t.total);
+  $('vBtnConfirmar').disabled = t.unidades === 0;
+}
+window.actualizarTotales = actualizarTotales;
 
 window.procesarVenta = async function() {
-  const clienteId = $('vCliente').value;
-  const productoId = $('vProducto').value;
-  const cantidad = parseInt($('vCantidad').value) || 0;
-  const precioU = parseFloat($('vPrecioUnitario').value) || 0;
-  if (!clienteId || !productoId || cantidad <= 0) return alert('Completá cliente, producto y cantidad.');
-  const prod = inventario.find(p => p.id == productoId);
-  const cli = clientes.find(c => c.id == clienteId);
-  if (prod.stock < cantidad) return alert('No hay stock suficiente.');
+  const t = totalesVenta();
+  if (!t.unidades) return alert('Elegí al menos un producto y la cantidad.');
+  for (const l of t.ls) {
+    const fresco = inventario.find(p => p.id == l.p.id);
+    if (!fresco || fresco.stock < l.cant) return alert('No hay stock suficiente de ' + l.p.nombre + '.');
+  }
+  const cli = clienteVenta(), cliente = cli ? cli.nombre : 'General';
+  const hoy = new Date().toISOString().slice(0, 10), f = 1 - t.dg / 100, r2 = x => Math.round(x * 100) / 100;
+  const filas = t.ls.map(l => ({ fecha: hoy, cliente, producto: l.p.nombre, cantidad: l.cant, totalVenta: r2(l.neto * f), totalCosto: r2(l.cant * (l.p.costo || 0)) }));
+  $('vBtnConfirmar').disabled = true;
+  const { error } = await supabase.from('ventas').insert(filas);
+  if (error) { $('vBtnConfirmar').disabled = false; return alert('No se pudo registrar la venta: ' + error.message); }
+  for (const l of t.ls) {
+    const { error: e2 } = await supabase.from('productos').update({ stock: l.p.stock - l.cant }).eq('id', l.p.id);
+    if (e2) alert('La venta se registró, pero no se pudo descontar el stock de ' + l.p.nombre + ': ' + e2.message);
+  }
+  mostrarRemito(t, cliente, hoy);
+  orden.cant = {}; orden.desc = {}; $('vDescGral').value = ''; $('vNotas').value = '';
+  await cargarDatosAdmin();
+};
 
-  const totalVenta = cantidad * precioU;
-  const totalCosto = cantidad * (prod.costo || 0);
-  const hoy = new Date().toISOString().slice(0, 10);
-
-  const { error } = await supabase.from('ventas').insert([{
-    fecha: hoy, cliente: cli ? cli.nombre : 'General', producto: prod.nombre, cantidad, totalVenta, totalCosto
-  }]);
-  if (error) return alert('No se pudo registrar la venta: ' + error.message);
-
-  const { error: e2 } = await supabase.from('productos').update({ stock: prod.stock - cantidad }).eq('id', productoId);
-  if (e2) alert('La venta se registró, pero no se pudo descontar el stock: ' + e2.message);
-
-  $('remitoFecha').textContent = 'Fecha: ' + formatoFecha(hoy);
-  $('remitoCliente').textContent = cli ? cli.nombre : 'General';
-  $('remitoDetalle').textContent = prod.nombre;
-  $('remitoCantidad').textContent = cantidad;
-  $('remitoTotal').textContent = dinero(totalVenta);
+function mostrarRemito(t, cliente, fecha) {
+  const filas = t.ls.map(l => `<tr><td>${esc(l.p.nombre)}</td><td>${l.cant}</td><td>${dinero(l.pu)}</td><td>${l.d ? l.d + '%' : '-'}</td><td>${dinero(l.neto)}</td></tr>`).join('');
+  const notas = $('vNotas').value.trim();
+  $('remitoCuerpo').innerHTML = `<div class="remito-head"><h3>REMITO DE ENTREGA</h3><p>Fecha: ${formatoFecha(fecha)}</p></div>
+    <p><strong>Cliente:</strong> ${esc(cliente)}</p>
+    <p><strong>Lista de precios:</strong> ${orden.lista === 'especial' ? 'Especial' : 'Mayorista'}</p>
+    <table class="rt"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Desc.</th><th>Subtotal</th></tr></thead><tbody>${filas}</tbody></table>
+    <div class="rtot"><div><span>Subtotal</span><b>${dinero(t.sub)}</b></div>${t.dg ? `<div><span>Descuento general (${t.dg}%)</span><b>−${dinero(t.descGral)}</b></div>` : ''}<div class="g"><span>TOTAL</span><b>${dinero(t.total)}</b></div></div>
+    ${notas ? `<p class="rn"><strong>Notas:</strong> ${esc(notas)}</p>` : ''}`;
   $('remitoModal').style.display = 'flex';
-  cargarDatosAdmin();
 }
 window.cerrarRemito = () => { $('remitoModal').style.display = 'none'; }
 
@@ -821,8 +949,8 @@ function formatoFecha(f) {
 
 function renderTablas() {
   $('tablaInventario').querySelector('tbody').innerHTML = inventario.map(p =>
-    `<tr><td>${esc(p.nombre)}</td><td><b>${p.stock}</b></td><td>${dinero(p.costo)}</td><td>${dinero(p.precioNormal)}</td></tr>`).join('')
-    || '<tr><td colspan="4">Todavía no cargaste productos.</td></tr>';
+    `<tr><td>${esc(p.nombre)}</td><td><b>${p.stock}</b></td><td>${dinero(p.costo)}</td><td>${dinero(p.precioNormal)}</td><td>${p.precioMayorista ? dinero(p.precioMayorista) : '-'}</td><td>${p.precioEspecial ? dinero(p.precioEspecial) : '-'}</td></tr>`).join('')
+    || '<tr><td colspan="6">Todavía no cargaste productos.</td></tr>';
 
   $('tablaClientes').querySelector('tbody').innerHTML = clientes.map(c => {
     const p = inventario.find(x => x.id == c.productoId);
@@ -1006,7 +1134,7 @@ window.demoCliente = async function() {
 }
 window.demoReiniciar = function() {
   if (!confirm('¿Reiniciar la demo con los datos de ejemplo?')) return;
-  ['demoDB', 'demoSesion', 'carritoDemo'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+  ['demoDB', 'demoDB2', 'demoSesion', 'carritoDemo'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
   location.reload();
 }
 if (MODO_DEMO) { $('demoBar').style.display = 'flex'; $('demoHint').style.display = 'block'; }
