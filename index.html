@@ -161,6 +161,48 @@ textarea{padding:10px;border:1px solid #bccac7;border-radius:6px;width:100%;font
   .barra-total{padding:10px 14px;gap:10px;flex-wrap:nowrap}.barra-total .t{font-size:22px}#vDetalle{display:none}
   .barra-total .btn{width:auto;margin-left:auto;padding:10px 14px;font-size:14px}
 }
+/* ---------- MENÚ LATERAL DEL ADMINISTRADOR ---------- */
+#lateral{display:none}
+body.es-admin{padding-left:230px}
+body.es-admin header{margin-left:-230px}
+body.es-admin #lateral{display:flex;flex-direction:column;gap:2px;position:fixed;left:0;top:var(--hh,60px);bottom:0;width:230px;background:#fff;border-right:1px solid var(--borde);padding:16px 12px;overflow:auto;z-index:90}
+.lat-t{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gris);font-weight:700;margin:14px 10px 6px}
+#lateral>.lat-t:first-child{margin-top:0}
+.lat-b{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;background:transparent;padding:11px 12px;border-radius:10px;font-size:15px;font-weight:600;color:var(--gris);cursor:pointer;font-family:inherit;line-height:1.25}
+.lat-b:hover{background:#f1f6f5}
+.lat-b.on{background:var(--verde-claro);color:var(--verde)}
+.lat-b svg{flex:none}
+.lat-sub{display:none;flex-direction:column;gap:2px}
+body.vista-panel .lat-sub{display:flex}
+body.vista-panel .menu{display:none}
+body.es-admin.vista-panel .hero,body.es-admin.vista-panel .seccion,body.es-admin.vista-panel footer{display:none}
+body.es-admin:not(.vista-panel) #panelAdmin{display:none!important}
+body.es-admin #panelAdmin{margin-top:24px}
+@media(max-width:900px){
+  body.es-admin{padding-left:0}body.es-admin header{margin-left:0}
+  body.es-admin #lateral{position:sticky;top:var(--hh,60px);bottom:auto;width:100%;flex-direction:row;align-items:center;overflow-x:auto;padding:8px 10px;gap:6px;border-right:0;border-bottom:1px solid var(--borde)}
+  #lateral .lat-t{display:none}.lat-sub{flex-direction:row;gap:6px}
+  .lat-b{width:auto;white-space:nowrap;padding:9px 12px;font-size:14px}
+}
+/* ---------- MIS ÓRDENES Y CLIENTES ---------- */
+.chips-o{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{border:1px solid var(--borde);background:#fff;border-radius:30px;padding:8px 14px;font-weight:600;font-size:14px;color:var(--gris);cursor:pointer;font-family:inherit}
+.chip b{background:var(--verde-claro);color:var(--verde);border-radius:20px;padding:1px 8px;margin-left:6px;font-size:12.5px}
+.chip.on{background:var(--verde);color:#fff;border-color:var(--verde)}.chip.on b{background:rgba(255,255,255,.2);color:#fff}
+.cli-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.mas{width:46px;height:46px;border-radius:50%;border:none;background:var(--verde);color:#fff;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 6px 16px rgba(22,66,60,.35);flex:none}
+.mas:hover{background:var(--verde-osc)}
+.cli-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;align-items:start}
+.cli{background:#fff;border:1px solid var(--borde);border-radius:12px;overflow:hidden}
+.cli.abierto{border-color:var(--verde);box-shadow:0 6px 20px rgba(22,66,60,.12)}
+.cli-h{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;background:transparent;border:none;text-align:left;cursor:pointer;font-family:inherit}
+.cli-av{width:38px;height:38px;border-radius:50%;background:var(--verde-claro);color:var(--verde);font-weight:800;display:flex;align-items:center;justify-content:center;flex:none;font-size:14px}
+.cli-h b{display:block;font-size:15px;color:var(--texto)}.cli-h small{color:var(--gris);font-size:12.5px}
+.cli-ch{margin-left:auto;color:var(--gris);transition:transform .25s}.cli.abierto .cli-ch{transform:rotate(180deg)}
+.cli-d{display:none;padding:0 14px 14px;font-size:13.5px;border-top:1px solid var(--borde)}
+.cli.abierto .cli-d{display:block}
+.cli-d p{margin:10px 0 0}.cli-d .btn-accion{margin-top:12px;padding:9px 14px;font-size:14px}
+.caja select{margin-bottom:12px}
 /* ---------- MODALES ---------- */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:1000;padding:16px}
 .caja{background:#fff;width:100%;max-width:380px;padding:28px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.3)}
@@ -229,11 +271,25 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
     </nav>
     <div class="acceso">
       <button class="btn-cart" id="btnCarrito" onclick="abrirCarrito()">Carrito (<span id="cantCarrito">0</span>)</button>
-      <a class="btn-panel" id="btnPanel" href="#panelAdmin">Ir al panel</a>
+      <a class="btn-panel" id="btnPanel" href="#panelAdmin" onclick="mostrarVista('panel')">Ir al panel</a>
       <button class="btn-login" id="btnAuth" onclick="manejarAuth()">Iniciar sesión</button>
     </div>
   </div>
 </header>
+<!-- ===== MENÚ LATERAL: solo lo ve el administrador ===== -->
+<aside id="lateral" aria-label="Menú del administrador">
+  <div class="lat-t">Vista</div>
+  <button class="lat-b" data-vista="tienda" onclick="mostrarVista('tienda')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1-5h16l1 5M4 9v11h16V9M9 20v-6h6v6"/></svg>Tienda online / catálogo</button>
+  <button class="lat-b on" data-vista="panel" onclick="mostrarVista('panel')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>Panel de administrador</button>
+  <div class="lat-sub">
+    <div class="lat-t">Panel</div>
+    <button class="lat-b on" data-tab="tVentas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Nueva orden</button>
+    <button class="lat-b" data-tab="tMisOrdenes"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Mis órdenes</button>
+    <button class="lat-b" data-tab="tClientes"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M21 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>Clientes</button>
+    <button class="lat-b" data-tab="tResumen"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Métricas</button>
+    <button class="lat-b" data-tab="tInventario"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg>Inventario</button>
+  </div>
+</aside>
 <div class="banner-pago" id="bannerPago"></div>
 <div class="demo-bar" id="demoBar">
   <span><b>Modo demo:</b> todo funciona con datos de ejemplo guardados solo en tu navegador.</span>
@@ -305,21 +361,10 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
 <!-- ===== PANEL DE ADMINISTRACIÓN (oculto hasta iniciar sesión) ===== -->
 <section id="panelAdmin">
   <div class="panel-caja">
-    <div class="panel-top">
-      <h2>Panel del administrador</h2>
-      <p>Esta sección solo la ve el administrador.</p>
-    </div>
-    <div class="tabs" role="tablist">
-      <button class="tab activa" data-tab="tResumen">Resumen</button>
-      <button class="tab" data-tab="tInventario">Inventario</button>
-      <button class="tab" data-tab="tClientes">Clientes</button>
-      <button class="tab" data-tab="tVentas">Ventas</button>
-      <button class="tab" data-tab="tPedidos">Pedidos online</button>
-    </div>
 
     <!-- Resumen -->
-    <div class="tab-cuerpo activa" id="tResumen">
-      <h3>Resumen del mes</h3>
+    <div class="tab-cuerpo" id="tResumen">
+      <h3>Métricas del mes</h3>
       <p class="ayuda">Se calcula con las ventas registradas en el mes actual.</p>
       <div class="tarjetas">
         <div class="tarjeta"><span>Ventas</span><strong id="resVentas">$0</strong></div>
@@ -376,27 +421,30 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
 
     <!-- Clientes -->
     <div class="tab-cuerpo" id="tClientes">
-      <h3>Agregar un cliente</h3>
-      <p class="ayuda">Si le asignás un producto habitual y un precio especial, se completan solos al venderle.</p>
-      <div class="form-grid">
-        <div><label for="cNombre">Nombre</label><input type="text" id="cNombre" placeholder="Ej. Miguel"></div>
-        <div><label for="cProductoFavorito">Producto habitual</label><select id="cProductoFavorito"></select></div>
-        <div><label for="cPrecioEspecial">Precio especial de ese producto ($)</label><input type="number" id="cPrecioEspecial" min="0"></div>
+      <div class="cli-top">
+        <div><h3>Clientes</h3><p class="ayuda" style="margin:0">Tocá un cliente para ver lo que suele pedir.</p></div>
+        <button class="mas" onclick="abrirClienteModal()" aria-label="Agregar cliente" title="Agregar cliente">+</button>
       </div>
-      <button class="btn-accion" onclick="guardarCliente()">Guardar cliente</button>
-      <div class="tabla-wrap"><table id="tablaClientes"><thead><tr><th>Cliente</th><th>Producto habitual</th><th>Precio especial</th></tr></thead><tbody></tbody></table></div>
+      <div class="cli-grid" id="listaClientes"></div>
     </div>
 
-    <!-- Pedidos online -->
-    <div class="tab-cuerpo" id="tPedidos">
-      <h3>Pedidos de la web</h3>
-      <p class="ayuda">Llegan con el pago ya confirmado por Mercado Pago. El stock se descuenta solo; vos preparás y marcás la entrega.</p>
-      <div class="tabla-wrap"><table id="tablaPedidos"><thead><tr><th>Fecha</th><th>Cliente</th><th>Detalle</th><th>Total</th><th>Estado</th><th></th></tr></thead><tbody></tbody></table></div>
+    <!-- Mis órdenes -->
+    <div class="tab-cuerpo" id="tMisOrdenes">
+      <h3>Mis órdenes</h3>
+      <p class="ayuda">Lo que hay que entregar y lo que ya vendiste. Los pedidos de la tienda online llegan con el pago confirmado.</p>
+      <div class="chips-o" id="chipsOrdenes">
+        <button class="chip on" data-f="entregar" onclick="filtrarOrdenes('entregar')">Por entregar<b id="n-entregar">0</b></button>
+        <button class="chip" data-f="pago" onclick="filtrarOrdenes('pago')">Esperando pago<b id="n-pago">0</b></button>
+        <button class="chip" data-f="entregadas" onclick="filtrarOrdenes('entregadas')">Entregadas<b id="n-entregadas">0</b></button>
+        <button class="chip" data-f="ventas" onclick="filtrarOrdenes('ventas')">Ventas efectuadas<b id="n-ventas">0</b></button>
+      </div>
+      <div id="ordenesPedidos"><div class="tabla-wrap"><table id="tablaPedidos"><thead><tr><th>Fecha</th><th>Cliente</th><th>Detalle</th><th>Total</th><th>Estado</th><th></th></tr></thead><tbody></tbody></table></div></div>
+      <div id="ordenesVentas" style="display:none"><div class="tabla-wrap"><table id="tablaVentas"><thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Cant.</th><th>Total</th></tr></thead><tbody></tbody></table></div></div>
     </div>
 
     <!-- Ventas -->
-    <div class="tab-cuerpo" id="tVentas">
-      <h3>Nueva venta</h3>
+    <div class="tab-cuerpo activa" id="tVentas">
+      <h3>Nueva orden</h3>
       <p class="ayuda">Elegí la lista de precios, buscá los productos y cargá unidades y descuentos. El total se va calculando abajo.</p>
       <div class="vgrid">
         <div>
@@ -431,8 +479,6 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
         <div class="det" id="vDetalle"></div>
         <button class="btn btn-claro" id="vBtnConfirmar" onclick="procesarVenta()" disabled>Confirmar y emitir remito</button>
       </div>
-      <h3 style="margin-top:28px">Ventas registradas</h3>
-      <div class="tabla-wrap"><table id="tablaVentas"><thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Cant.</th><th>Total</th></tr></thead><tbody></tbody></table></div>
     </div>
   </div>
 </section>
@@ -486,6 +532,17 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
     <p class="error" id="compraError"></p>
     <div style="display:flex;gap:10px"><button class="btn-accion" style="flex:1" id="btnPagar" onclick="pagar()">Pagar con Mercado Pago</button><button class="btn-sec" onclick="cerrarCarrito()">Cerrar</button></div>
     <div class="bloque" id="misPedidos" style="display:none"><h3 style="font-size:17px">Mis pedidos</h3><div id="listaMisPedidos"></div></div>
+  </div>
+</div>
+
+<div class="modal" id="clienteModal" role="dialog" aria-modal="true">
+  <div class="caja">
+    <h3>Agregar un cliente</h3>
+    <p class="nota">Si le asignás un producto habitual y un precio especial, se completan solos al venderle.</p>
+    <label for="cNombre">Nombre</label><input type="text" id="cNombre" placeholder="Ej. Miguel">
+    <label for="cProductoFavorito">Producto habitual</label><select id="cProductoFavorito"></select>
+    <label for="cPrecioEspecial">Precio especial de ese producto ($)</label><input type="number" id="cPrecioEspecial" min="0">
+    <div style="display:flex;gap:10px"><button class="btn-accion" style="flex:1" onclick="guardarCliente()">Guardar cliente</button><button class="btn-sec" onclick="cerrarClienteModal()">Cancelar</button></div>
   </div>
 </div>
 
@@ -725,7 +782,7 @@ window.iniciarSesionAdmin = async function() {
   $('passwordAdmin').value = '';
   cerrarModalLogin();
   await verificarSesion();
-  if (esAdmin) $('panelAdmin').scrollIntoView({ behavior: 'smooth' });
+  if (esAdmin) mostrarVista('panel');
   else aviso('#e2f0ed', 'Sesión iniciada. Ya podés comprar y ver tus pedidos.');
 };
 ['emailAdmin','passwordAdmin'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') enviarAuth(); }));
@@ -751,17 +808,28 @@ async function verificarSesion() {
   $('btnAuth').textContent = sesionActiva ? 'Cerrar sesión' : 'Iniciar sesión';
   $('btnPanel').style.display = esAdmin ? 'inline-block' : 'none';
   $('panelAdmin').style.display = esAdmin ? 'block' : 'none';
+  aplicarVista();
   if (esAdmin) cargarDatosAdmin();
   else { inventario = []; clientes = []; ventas = []; pedidos = []; }
 }
 
 /* ---------- PESTAÑAS DEL PANEL ---------- */
-document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => {
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('activa'));
-  document.querySelectorAll('.tab-cuerpo').forEach(c => c.classList.remove('activa'));
-  btn.classList.add('activa');
-  $(btn.dataset.tab).classList.add('activa');
-}));
+let vistaAdmin = 'panel';
+const cabecera = document.querySelector('header');
+function aplicarVista() {
+  document.documentElement.style.setProperty('--hh', cabecera.offsetHeight + 'px');
+  document.body.classList.toggle('es-admin', esAdmin);
+  document.body.classList.toggle('vista-panel', esAdmin && vistaAdmin === 'panel');
+  document.querySelectorAll('[data-vista]').forEach(b => b.classList.toggle('on', b.dataset.vista === vistaAdmin));
+}
+window.mostrarVista = function(v) { vistaAdmin = v; aplicarVista(); window.scrollTo({ top: 0 }); };
+window.irPestana = function(id) {
+  document.querySelectorAll('.lat-sub [data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === id));
+  document.querySelectorAll('.tab-cuerpo').forEach(c => c.classList.toggle('activa', c.id === id));
+  mostrarVista('panel');
+};
+document.querySelectorAll('.lat-sub [data-tab]').forEach(b => b.addEventListener('click', () => irPestana(b.dataset.tab)));
+addEventListener('resize', aplicarVista);
 
 /* ---------- DATOS DEL ADMINISTRADOR ---------- */
 async function cargarDatosAdmin() {
@@ -830,6 +898,7 @@ window.guardarCliente = async function() {
   const { error } = await supabase.from('clientes').insert([{ nombre, productoId, precioEspecial }]);
   if (error) return alert('No se pudo guardar: ' + error.message);
   ['cNombre','cPrecioEspecial'].forEach(id => $(id).value = '');
+  cerrarClienteModal();
   cargarDatosAdmin();
 }
 
@@ -942,6 +1011,24 @@ function mostrarRemito(t, cliente, fecha) {
 }
 window.cerrarRemito = () => { $('remitoModal').style.display = 'none'; }
 
+
+/* ---------- CLIENTES (tarjetas) ---------- */
+let abiertoCli = '';
+window.abrirClienteModal = () => { $('clienteModal').style.display = 'flex'; $('cNombre').focus(); };
+window.cerrarClienteModal = () => { $('clienteModal').style.display = 'none'; };
+window.abrirCliente = function(id) { abiertoCli = abiertoCli === String(id) ? '' : String(id); renderClientes(); };
+window.ordenParaCliente = function(id) { $('vCliente').value = id; renderVenta(); irPestana('tVentas'); };
+function renderClientes() {
+  $('listaClientes').innerHTML = clientes.map(c => {
+    const hist = {};
+    ventas.filter(v => v.cliente === c.nombre).forEach(v => { hist[v.producto] = (hist[v.producto] || 0) + (Number(v.cantidad) || 0); });
+    const top = Object.entries(hist).sort((a, b) => b[1] - a[1]).slice(0, 3);
+    const hab = inventario.find(p => p.id == c.productoId);
+    const ini = c.nombre.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+    return `<div class="cli${abiertoCli === String(c.id) ? ' abierto' : ''}"><button class="cli-h" onclick="abrirCliente('${esc(c.id)}')"><span class="cli-av">${esc(ini)}</span><span><b>${esc(c.nombre)}</b><small>${hab ? 'Habitual: ' + esc(hab.nombre) : 'Sin producto habitual'}</small></span><span class="cli-ch">▾</span></button><div class="cli-d"><p><b>Producto habitual:</b> ${hab ? esc(hab.nombre) + (c.precioEspecial ? ' · precio especial ' + dinero(c.precioEspecial) : '') : 'sin definir'}</p><p><b>Compra seguido:</b> ${top.length ? top.map(([n, q]) => esc(n) + ' (x' + q + ')').join(', ') : 'todavía no tiene compras registradas'}</p><button class="btn-accion" onclick="ordenParaCliente('${esc(c.id)}')">Nueva orden</button></div></div>`;
+  }).join('') || '<div class="vacio" style="grid-column:1/-1">Todavía no cargaste clientes. Tocá el + para agregar el primero.</div>';
+}
+
 function formatoFecha(f) {
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(f || '');
   return m ? `${m[3]}/${m[2]}/${m[1]}` : (f || '');
@@ -952,10 +1039,7 @@ function renderTablas() {
     `<tr><td>${esc(p.nombre)}</td><td><b>${p.stock}</b></td><td>${dinero(p.costo)}</td><td>${dinero(p.precioNormal)}</td><td>${p.precioMayorista ? dinero(p.precioMayorista) : '-'}</td><td>${p.precioEspecial ? dinero(p.precioEspecial) : '-'}</td></tr>`).join('')
     || '<tr><td colspan="6">Todavía no cargaste productos.</td></tr>';
 
-  $('tablaClientes').querySelector('tbody').innerHTML = clientes.map(c => {
-    const p = inventario.find(x => x.id == c.productoId);
-    return `<tr><td>${esc(c.nombre)}</td><td>${p ? esc(p.nombre) : '-'}</td><td>${c.precioEspecial ? dinero(c.precioEspecial) : '-'}</td></tr>`;
-  }).join('') || '<tr><td colspan="3">Todavía no cargaste clientes.</td></tr>';
+  renderClientes();
 
   $('tablaVentas').querySelector('tbody').innerHTML = ventas.map(v =>
     `<tr><td>${formatoFecha(v.fecha)}</td><td>${esc(v.cliente)}</td><td>${esc(v.producto)}</td><td>${v.cantidad}</td><td>${dinero(v.totalVenta)}</td></tr>`).join('')
@@ -1090,9 +1174,21 @@ function mostrarRetornoPago() {
 guardarCarrito();
 
 /* ---------- PEDIDOS (ADMIN) ---------- */
+let filtroOrdenes = 'entregar';
+const ESTADOS_FILTRO = { entregar: ['pagado', 'pagado_sin_stock', 'monto_incorrecto'], pago: ['pendiente_pago'], entregadas: ['entregado'] };
+window.filtrarOrdenes = function(f) { filtroOrdenes = f; renderPedidos(); };
 function renderPedidos() {
-  $('tablaPedidos').querySelector('tbody').innerHTML = pedidos.map(p => `<tr><td>${new Date(p.creado).toLocaleDateString('es-AR')}</td><td>${esc(p.nombre)}<br><small>${esc(p.email)}<br>${esc(p.telefono)}</small></td><td>${(p.pedido_items || []).map(i => i.cantidad + ' x ' + esc(i.nombre)).join('<br>')}<br><small>${esc(p.direccion)}</small></td><td>${dinero(p.total)}</td><td class="${p.estado === 'pagado_sin_stock' || p.estado === 'monto_incorrecto' ? 'baja' : ''}">${ESTADOS_ADM[p.estado] || p.estado}</td><td>${p.estado === 'pagado' ? `<button class="btn-accion" onclick="marcarEntregado('${p.id}')">Marcar entregado</button>` : ''}</td></tr>`).join('')
-    || '<tr><td colspan="6">Todavía no hay pedidos online.</td></tr>';
+  ['entregar', 'pago', 'entregadas'].forEach(k => { $('n-' + k).textContent = pedidos.filter(p => ESTADOS_FILTRO[k].includes(p.estado)).length; });
+  $('n-ventas').textContent = ventas.length;
+  document.querySelectorAll('#chipsOrdenes .chip').forEach(c => c.classList.toggle('on', c.dataset.f === filtroOrdenes));
+  const esVentas = filtroOrdenes === 'ventas';
+  $('ordenesPedidos').style.display = esVentas ? 'none' : 'block';
+  $('ordenesVentas').style.display = esVentas ? 'block' : 'none';
+  if (esVentas) return;
+  const vacio = { entregar: 'No tenés pedidos por entregar.', pago: 'No hay pedidos esperando pago.', entregadas: 'Todavía no entregaste pedidos online.' }[filtroOrdenes];
+  const lista = pedidos.filter(p => ESTADOS_FILTRO[filtroOrdenes].includes(p.estado));
+  $('tablaPedidos').querySelector('tbody').innerHTML = lista.map(p => `<tr><td>${new Date(p.creado).toLocaleDateString('es-AR')}</td><td>${esc(p.nombre)}<br><small>${esc(p.email)}<br>${esc(p.telefono)}</small></td><td>${(p.pedido_items || []).map(i => i.cantidad + ' x ' + esc(i.nombre)).join('<br>')}<br><small>${esc(p.direccion)}</small></td><td>${dinero(p.total)}</td><td class="${p.estado === 'pagado_sin_stock' || p.estado === 'monto_incorrecto' ? 'baja' : ''}">${ESTADOS_ADM[p.estado] || p.estado}</td><td>${p.estado === 'pagado' ? `<button class="btn-accion" onclick="marcarEntregado('${p.id}')">Marcar entregado</button>` : ''}</td></tr>`).join('')
+    || `<tr><td colspan="6">${vacio}</td></tr>`;
 }
 window.marcarEntregado = async function(id) {
   const { error } = await supabase.from('pedidos').update({ estado: 'entregado' }).eq('id', id);
@@ -1125,7 +1221,7 @@ window.pagoDemoOk = function() {
 window.demoAdmin = async function() {
   await supabase.auth.signInWithPassword({ email: 'admin@demo.com', password: 'demo1234' });
   await verificarSesion();
-  $('panelAdmin').scrollIntoView({ behavior: 'smooth' });
+  mostrarVista('panel');
 }
 window.demoCliente = async function() {
   await supabase.auth.signInWithPassword({ email: 'cliente@demo.com', password: 'demo1234' });
