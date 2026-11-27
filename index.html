@@ -203,6 +203,36 @@ body.es-admin #panelAdmin{margin-top:24px}
 .cli.abierto .cli-d{display:block}
 .cli-d p{margin:10px 0 0}.cli-d .btn-accion{margin-top:12px;padding:9px 14px;font-size:14px}
 .caja select{margin-bottom:12px}
+/* ---------- RESÚMENES ---------- */
+.res-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin-top:6px}
+.kpi-big{background:#fff;border:1px solid var(--borde);border-left:5px solid var(--verde);border-radius:14px;padding:18px 20px}
+.kpi-h{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;color:var(--gris)}
+.pill-estado{font-size:12px;padding:4px 12px;border-radius:20px;background:var(--verde-claro);color:#1b7a4b}
+.pill-estado.baj{background:#fde8e6;color:var(--rojo)}
+.kpi-num{font-family:var(--titulos);font-size:clamp(30px,4vw,42px);font-weight:800;color:var(--texto);margin:6px 0 10px;line-height:1.1}
+.barra-prog{position:relative;height:10px;border-radius:6px;background:#e6ecea;margin:6px 0 8px}
+.barra-prog i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:var(--verde);width:0;transition:width .8s}
+.barra-prog u{position:absolute;top:-5px;width:3px;height:20px;border-radius:2px;background:var(--texto);text-decoration:none;display:none}
+.kpi-sub{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--gris)}.kpi-sub b{color:var(--texto)}
+.kpi-txt{margin:12px 0 0;font-size:14px;border-bottom:1px solid var(--borde);padding-bottom:10px}
+.kpi-var{margin:10px 0 0;font-size:13px;color:var(--gris)}.sube{color:#1b7a4b;font-weight:700}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kpi{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:14px 16px}
+.kpi span{display:block;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gris);font-weight:700}
+.kpi strong{display:block;font-family:var(--titulos);font-size:28px;color:var(--texto);margin-top:4px;line-height:1.15}
+.kpi small{color:var(--gris);font-size:12px}
+.res-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.res-card{background:#fff;border:1px solid var(--borde);border-radius:14px;padding:16px 18px}
+.res-card h4{margin:0 0 12px;font-family:var(--titulos);font-size:16px}
+.donut-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.donut{width:150px;height:150px;flex:none}.d-t{font:700 11px var(--cuerpo);fill:var(--gris)}.d-s{font:800 12px var(--titulos);fill:var(--texto)}
+.leyenda{list-style:none;margin:0;padding:0;flex:1;min-width:180px}
+.leyenda li{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:13.5px}
+.leyenda li i{width:11px;height:11px;border-radius:3px;flex:none}
+.leyenda li span{flex:1;min-width:0}.leyenda b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.leyenda small{color:var(--gris);font-size:12px}.leyenda em{font-style:normal;font-weight:700;color:var(--texto)}
+@media(max-width:900px){.res-grid,.res-2{grid-template-columns:1fr}}
+@media(max-width:480px){.kpi strong{font-size:22px}}
 /* ---------- MODALES ---------- */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:1000;padding:16px}
 .caja{background:#fff;width:100%;max-width:380px;padding:28px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.3)}
@@ -286,7 +316,7 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
     <button class="lat-b on" data-tab="tVentas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Nueva orden</button>
     <button class="lat-b" data-tab="tMisOrdenes"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Mis órdenes</button>
     <button class="lat-b" data-tab="tClientes"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M21 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>Clientes</button>
-    <button class="lat-b" data-tab="tResumen"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Métricas</button>
+    <button class="lat-b" data-tab="tResumen"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Resúmenes</button>
     <button class="lat-b" data-tab="tInventario"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg>Inventario</button>
   </div>
 </aside>
@@ -362,15 +392,41 @@ header{background:rgba(15,44,40,.82);backdrop-filter:blur(12px);-webkit-backdrop
 <section id="panelAdmin">
   <div class="panel-caja">
 
-    <!-- Resumen -->
+    <!-- Resúmenes -->
     <div class="tab-cuerpo" id="tResumen">
-      <h3>Métricas del mes</h3>
-      <p class="ayuda">Se calcula con las ventas registradas en el mes actual.</p>
-      <div class="tarjetas">
-        <div class="tarjeta"><span>Ventas</span><strong id="resVentas">$0</strong></div>
-        <div class="tarjeta"><span>Costos</span><strong id="resCompras">$0</strong></div>
+      <h3>Resumen del mes</h3>
+      <p class="ayuda" id="resFecha"></p>
+      <div class="res-grid">
+        <div class="kpi-big">
+          <div class="kpi-h"><span>Ventas del mes</span><b class="pill-estado" id="resEstado"></b></div>
+          <div class="kpi-num" id="resVentas">$0</div>
+          <div class="barra-prog"><i id="resBarra"></i><u id="resMarca"></u></div>
+          <div class="kpi-sub"><span id="resPct"></span><b id="resRitmo">ritmo esperado hoy</b></div>
+          <p class="kpi-txt" id="resProy"></p>
+          <p class="kpi-var" id="resVar"></p>
+        </div>
+        <div class="kpis">
+          <div class="kpi"><span>Órdenes del mes</span><strong id="resOrdenes">0</strong></div>
+          <div class="kpi"><span>Unidades vendidas</span><strong id="resUnidades">0</strong></div>
+          <div class="kpi"><span>Clientes que compraron</span><strong id="resClientes">0</strong></div>
+          <div class="kpi"><span>Valor de venta promedio</span><strong id="resPromedio">$0</strong><small>por orden</small></div>
+        </div>
+      </div>
+      <div class="res-2">
+        <div class="res-card"><h4>Ventas por producto</h4><div class="donut-wrap" id="donutProductos"></div></div>
+        <div class="res-card"><h4>Ventas por cliente</h4><div class="donut-wrap" id="donutClientes"></div></div>
+      </div>
+      <div class="tarjetas" style="margin-top:16px">
+        <div class="tarjeta"><span>Costos del mes</span><strong id="resCompras">$0</strong></div>
         <div class="tarjeta"><span>Ganancia neta</span><strong id="resGanancia">$0</strong></div>
         <div class="tarjeta"><span>Rentabilidad</span><strong id="resRentabilidad">0%</strong></div>
+      </div>
+      <div class="bloque">
+        <div class="cli-top">
+          <div><h3>Todas las ventas</h3><p class="ayuda" style="margin:0" id="resVentasN"></p></div>
+          <input type="search" id="resBuscar" placeholder="Buscar por cliente o producto..." oninput="renderVentasLista()" aria-label="Buscar ventas" style="max-width:280px">
+        </div>
+        <div class="tabla-wrap" style="max-height:380px;overflow:auto"><table id="tablaVentasRes"><thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Cant.</th><th>Precio unit.</th><th>Total</th><th>Ganancia</th></tr></thead><tbody></tbody></table></div>
       </div>
       <div class="bloque">
         <h3>Productos con poco stock</h3>
@@ -1051,18 +1107,70 @@ function renderTablas() {
     || '<tr><td colspan="2">Todo en orden: no hay productos con poco stock.</td></tr>';
 }
 
+const numero = v => Number(v) || 0;
+const compacto = n => { n = numero(n); const a = Math.abs(n); return a >= 1e6 ? '$ ' + (n / 1e6).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' M' : a >= 1e3 ? '$ ' + (n / 1e3).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' mil' : dinero(n); };
+const COLORES_DONUT = ['#16423c', '#2d6a5f', '#3f8f80', '#8fc4b9', '#f0b429'], COLOR_OTROS = '#c9d3d1';
+function donut(el, datos, vacio) {
+  const total = datos.reduce((a, d) => a + d[1], 0);
+  if (!total) { el.innerHTML = `<div class="vacio" style="width:100%">${vacio}</div>`; return; }
+  const orden5 = datos.slice().sort((a, b) => b[1] - a[1]);
+  const items = orden5.slice(0, 5), resto = orden5.slice(5).reduce((a, d) => a + d[1], 0);
+  if (resto > 0) items.push(['Otros', resto]);
+  const color = i => i < 5 ? COLORES_DONUT[i] : COLOR_OTROS;
+  const R = 52, C = 2 * Math.PI * R; let acum = 0;
+  const arcos = items.map(([n, v], i) => { const len = v / total * C; const t = `<circle r="${R}" cx="70" cy="70" fill="none" stroke="${color(i)}" stroke-width="22" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-acum}" transform="rotate(-90 70 70)"/>`; acum += len; return t; }).join('');
+  el.innerHTML = `<svg viewBox="0 0 140 140" class="donut" role="img" aria-label="Gráfico de ventas">${arcos}<text x="70" y="66" text-anchor="middle" class="d-t">Total</text><text x="70" y="82" text-anchor="middle" class="d-s">${compacto(total)}</text></svg><ul class="leyenda">${items.map(([n, v], i) => `<li><i style="background:${color(i)}"></i><span><b>${esc(n)}</b><small>${compacto(v)}</small></span><em>${Math.round(v / total * 100)}%</em></li>`).join('')}</ul>`;
+}
 function calcularFinanzasMes() {
-  const mes = new Date().toISOString().slice(0, 7); // AAAA-MM
-  const delMes = ventas.filter(v => (v.fecha || '').startsWith(mes));
-  const totalVentas = delMes.reduce((a, v) => a + (v.totalVenta || 0), 0);
-  const totalCostos = delMes.reduce((a, v) => a + (v.totalCosto || 0), 0);
-  const ganancia = totalVentas - totalCostos;
-  const rent = totalCostos > 0 ? (ganancia / totalCostos) * 100 : 0;
+  const hoy = new Date(), y = hoy.getUTCFullYear(), m = hoy.getUTCMonth(), dia = hoy.getUTCDate();
+  const fmt = (a, b) => a + '-' + String(b + 1).padStart(2, '0');
+  const mes = fmt(y, m), mesAnt = m === 0 ? fmt(y - 1, 11) : fmt(y, m - 1);
+  const diasMes = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  const nombre = (a, b) => new Date(Date.UTC(a, b, 1)).toLocaleDateString('es-AR', { month: 'long', timeZone: 'UTC' });
+  const nomMes = nombre(y, m), nomAnt = nombre(m === 0 ? y - 1 : y, m === 0 ? 11 : m - 1);
+  const delMes = ventas.filter(v => (v.fecha || '').startsWith(mes)), delAnt = ventas.filter(v => (v.fecha || '').startsWith(mesAnt));
+  const suma = (arr, k) => arr.reduce((a, v) => a + numero(v[k]), 0);
+  const totalVentas = suma(delMes, 'totalVenta'), totalCostos = suma(delMes, 'totalCosto'), ganancia = totalVentas - totalCostos;
+  const totalAnt = suma(delAnt, 'totalVenta');
+  const hastaHoyAnt = suma(delAnt.filter(v => Number((v.fecha || '').slice(8, 10)) <= dia), 'totalVenta');
+  // una orden = las ventas de un mismo cliente en un mismo día
+  const ordenes = new Set(delMes.map(v => v.fecha + '|' + v.cliente)).size;
+  const clientesN = new Set(delMes.map(v => v.cliente).filter(c => c && c !== 'General')).size;
+  const unidades = delMes.reduce((a, v) => a + numero(v.cantidad), 0);
+  $('resFecha').textContent = `Día ${dia} de ${diasMes} · actualizado ${hoy.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}`;
   $('resVentas').textContent = dinero(totalVentas);
+  $('resOrdenes').textContent = ordenes;
+  $('resUnidades').textContent = unidades.toLocaleString('es-AR');
+  $('resClientes').textContent = clientesN;
+  $('resPromedio').textContent = dinero(ordenes ? totalVentas / ordenes : 0);
   $('resCompras').textContent = dinero(totalCostos);
   $('resGanancia').textContent = dinero(ganancia);
-  $('resRentabilidad').textContent = rent.toFixed(1) + '%';
+  $('resRentabilidad').textContent = (totalCostos > 0 ? ganancia / totalCostos * 100 : 0).toFixed(1) + '%';
+  const barra = $('resBarra'), marca = $('resMarca'), est = $('resEstado');
+  if (totalAnt <= 0) {
+    barra.style.width = '0'; marca.style.display = 'none'; est.style.display = 'none';
+    $('resRitmo').style.display = 'none'; $('resPct').textContent = 'Todavía no hay un mes anterior para comparar.'; $('resProy').textContent = ''; $('resVar').textContent = '';
+  } else {
+    const pct = totalVentas / totalAnt * 100, proy = totalVentas / dia * diasMes, pp = proy / totalAnt * 100;
+    barra.style.width = Math.min(100, pct) + '%'; marca.style.display = 'block'; marca.style.left = Math.min(100, dia / diasMes * 100) + '%';
+    $('resRitmo').style.display = ''; $('resPct').textContent = Math.round(pct) + '% de lo vendido en ' + nomAnt;
+    $('resProy').innerHTML = `Al ritmo actual, ${nomMes} cierra en <b>${compacto(proy)}</b>: ${Math.round(pp)}% de lo vendido en ${nomAnt}.`;
+    est.style.display = ''; est.textContent = pp >= 100 ? 'Vas bien' : 'Vas por debajo'; est.className = 'pill-estado' + (pp >= 100 ? '' : ' baj');
+    if (hastaHoyAnt > 0) { const v = (totalVentas / hastaHoyAnt - 1) * 100; $('resVar').innerHTML = `<span class="${v >= 0 ? 'sube' : 'baja'}">${v >= 0 ? '▲' : '▼'} ${Math.abs(Math.round(v))}%</span> vs. el mismo día de ${nomAnt}`; }
+    else $('resVar').textContent = '';
+  }
+  const agrupar = k => { const o = {}; delMes.forEach(v => { o[v[k]] = (o[v[k]] || 0) + numero(v.totalVenta); }); return Object.entries(o); };
+  donut($('donutProductos'), agrupar('producto'), 'Sin ventas este mes todavía.');
+  donut($('donutClientes'), agrupar('cliente'), 'Sin ventas este mes todavía.');
+  renderVentasLista();
 }
+function renderVentasLista() {
+  const q = ($('resBuscar').value || '').trim().toLowerCase();
+  const lista = ventas.filter(v => !q || (v.cliente + ' ' + v.producto).toLowerCase().includes(q));
+  $('resVentasN').textContent = lista.length + (lista.length === 1 ? ' venta' : ' ventas') + (q ? ' encontradas' : ' registradas');
+  $('tablaVentasRes').querySelector('tbody').innerHTML = lista.map(v => { const g = numero(v.totalVenta) - numero(v.totalCosto); return `<tr><td>${formatoFecha(v.fecha)}</td><td>${esc(v.cliente)}</td><td>${esc(v.producto)}</td><td>${v.cantidad}</td><td>${dinero(v.cantidad ? numero(v.totalVenta) / v.cantidad : 0)}</td><td>${dinero(v.totalVenta)}</td><td class="${g < 0 ? 'baja' : ''}">${dinero(g)}</td></tr>`; }).join('') || '<tr><td colspan="7">No hay ventas para mostrar.</td></tr>';
+}
+window.renderVentasLista = renderVentasLista;
 
 /* ---------- CUENTA DE CLIENTE ---------- */
 async function explicarError(error, email) {
